@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dingle Games</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f2f5;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #00b96b;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .game-btn {
+      background: white;
+      border: 2px solid #00b96b;
+      border-radius: 15px;
+      padding: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      color: #00b96b;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: 0.2s;
+    }
+    .game-btn:hover {
+      background: #00b96b;
+      color: white;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+<h2>🎮 Dingle Game Center</h2>
+
+<div class="grid">
+  <div class="game-btn" onclick="go('spin.html')">🎡 Spin & Win</div>
+  <div class="game-btn" onclick="go('quiz.html')">🧠 Quiz Master</div>
+  <div class="game-btn" onclick="go('dice.html')">🎲 Lucky Dice</div>
+  <div class="game-btn" onclick="go('arcade.html')">👾 Arcade Fun</div>
+  <div class="game-btn" onclick="go('racing.html')">🏁 Racing Game</div>
+  <div class="game-btn" onclick="go('tap.html')">👆 Tap & Blast</div>
+  <div class="game-btn" onclick="go('mystery.html')">🎁 Mystery Box</div>
+  <div class="game-btn" onclick="go('puzzle.html')">🧩 Puzzle Game</div>
+</div>
+
+<script>
+  function go(page) {
+    window.location.href = page;
+  }
+</script>
+
+</body>
+</html>

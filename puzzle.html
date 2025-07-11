@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🧩 Puzzle Game</title>
+  <style>
+    body { font-family: Arial; background: #f4f9f4; text-align: center; padding: 20px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .tile {
+      width: 100px;
+      height: 100px;
+      background: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .tile:hover {
+      background: #00b96b;
+      color: white;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+    }
+    button {
+      background: #00b96b;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h2>🧩 Puzzle Game</h2>
+  <p>Pick the lucky box. Stake ₦100 minimum.</p>
+  <input type="number" id="stake" placeholder="Enter stake">
+  <button onclick="startGame()">Start Game</button>
+
+  <div class="grid" id="grid" style="display:none;">
+    <div class="tile" onclick="pickTile(0)">❓</div>
+    <div class="tile" onclick="pickTile(1)">❓</div>
+    <div class="tile" onclick="pickTile(2)">❓</div>
+    <div class="tile" onclick="pickTile(3)">❓</div>
+    <div class="tile" onclick="pickTile(4)">❓</div>
+    <div class="tile" onclick="pickTile(5)">❓</div>
+  </div>
+
+  <h3 id="result"></h3>
+  <p><a href="dashboard.html">⬅ Back to Dashboard</a></p>
+
+<script>
+let winningIndex = -1;
+let stake = 0;
+
+function getBalance() {
+  return parseFloat(localStorage.getItem("balance") || "20000");
+}
+function setBalance(val) {
+  localStorage.setItem("balance", val.toFixed(3));
+}
+function saveToHistory(msg) {
+  let logs = JSON.parse(localStorage.getItem("history") || "[]");
+  logs.unshift({ text: msg, time: new Date().toLocaleString() });
+  localStorage.setItem("history", JSON.stringify(logs));
+}
+
+function startGame() {
+  stake = parseFloat(document.getElementById("stake").value);
+  if (isNaN(stake) || stake < 100) return alert("Minimum stake is ₦100");
+  if (stake > getBalance()) return alert("Insufficient balance");
+
+  setBalance(getBalance() - stake);
+  winningIndex = Math.floor(Math.random() * 6);
+  document.getElementById("grid").style.display = "grid";
+  document.getElementById("result").textContent = "";
+}
+
+function pickTile(index) {
+  if (index === winningIndex) {
+    const reward = stake * 2;
+    setBalance(getBalance() + reward);
+    document.getElementById("result").textContent = `🎉 You picked the correct box! Won ₦${reward.toFixed(2)}.`;
+    saveToHistory(`✅ Puzzle Game Win: ₦${reward.toFixed(2)} from ₦${stake}`);
+  } else {
+    document.getElementById("result").textContent = `❌ Wrong box. You lost ₦${stake.toFixed(2)}.`;
+    saveToHistory(`❌ Puzzle Game Loss: ₦${stake}`);
+  }
+  document.getElementById("grid").style.display = "none";
+}
+</script>
+</body>
+</html>

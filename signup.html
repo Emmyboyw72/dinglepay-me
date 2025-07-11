@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup - Dingle</title>
+  <style>
+    body {
+      background: #f0f2f5;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #00b96b;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #00b96b;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00965e;
+    }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .link a {
+      color: #00b96b;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Create Your Dingle Account</h2>
+
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="tel" id="phone" placeholder="Phone Number">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="signup()">Signup</button>
+
+  <div class="link">
+    Already have an account? <a href="login.html">Login</a>
+  </div>
+
+  <script>
+    function signup() {
+      let phone = document.getElementById("phone").value;
+      let password = document.getElementById("password").value;
+      let name = document.getElementById("name").value;
+
+      if (!phone || !password || !name) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      if (localStorage.getItem("accountExists") === "yes") {
+        alert("Only one account allowed on this phone.");
+        return;
+      }
+
+      let user = { phone, password, name };
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("accountExists", "yes");
+      localStorage.setItem("balance", "20000");
+      localStorage.setItem("history", "[]");
+
+      alert("Account created successfully!");
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Dingle</title>
+  <style>
+    body {
+      margin: 0;
+      background: #00b96b;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .logo {
+      font-size: 50px;
+      font-weight: bold;
+      animation: bounceZoom 2s ease-in-out;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes bounceZoom {
+      0% {
+        transform: scale(0.3) rotateY(0deg);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.1) rotateY(180deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotateY(360deg);
+      }
+    }
+
+    .subtext {
+      margin-top: 10px;
+      font-size: 18px;
+      animation: fadeIn 3s ease;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .enter-btn {
+      margin-top: 40px;
+      padding: 12px 30px;
+      font-size: 16px;
+      background: white;
+      color: #00b96b;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .enter-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">DINGLE</div>
+  <div class="subtext">Welcome to Dingle Cooperative</div>
+  <button class="enter-btn" onclick="location.href='signup.html'">Get Started</button>
+
+</body>
+</html>
