@@ -36,7 +36,7 @@
     }
 
     .container {
-      background-color: #f8f9ff;
+      background-color: var(--white);
       padding: 40px;
       border-radius: 18px;
       box-shadow: 0 10px 40px rgba(26, 115, 232, 0.15);
@@ -68,6 +68,15 @@
       outline: none;
       border-color: var(--blue-primary);
       box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+
+    /* ✅ AUTO-FILL SUPPORT — Chrome will show saved emails */
+    input[type="email"] {
+      autocomplete: "email";
+    }
+
+    input[type="password"] {
+      autocomplete: "new-password";
     }
 
     button {
@@ -116,7 +125,7 @@
     }
 
     /* ==================== */
-    /* ✅ BEAUTIFUL ALERT POPUP — BLUE HEADER, WHITE BODY */
+    /* ✅ BEAUTIFUL LARGE ALERT POPUP — BLUE HEADER, WHITE BODY */
     /* ==================== */
     .alert {
       position: fixed;
@@ -125,49 +134,68 @@
       transform: translate(-50%, -50%);
       background-color: var(--white);
       color: #1a73e8;
-      padding: 36px;
-      border-radius: 20px;
-      box-shadow: 0 16px 48px rgba(26, 115, 232, 0.3);
+      padding: 48px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(26, 115, 232, 0.35);
       border: 1px solid #dce0e6;
       text-align: center;
       z-index: 1000;
       font-size: 16px;
-      animation: fadeInUp 0.5s ease-out;
+      animation: fadeInUp 0.6s ease-out;
       max-width: 90%;
       font-family: inherit;
-      border-left: 4px solid var(--blue-primary);
+      border-left: 5px solid var(--blue-primary);
     }
 
     .alert h2 {
-      margin: 0 0 16px 0;
-      color: var(--blue-primary);
-      font-size: 1.4rem;
+      margin: 0 0 20px 0;
+      color: white;
+      background-color: var(--blue-primary);
+      padding: 18px 28px;
+      border-radius: 16px;
+      font-size: 1.6rem;
       font-weight: 700;
-      padding: 12px 0;
-      border-bottom: 2px solid #f0f0f0;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 16px rgba(26, 115, 232, 0.2);
     }
 
     .alert p {
-      margin: 0 0 24px 0;
-      line-height: 1.6;
+      margin: 0 0 28px 0;
+      line-height: 1.7;
       color: #555;
-      font-size: 15px;
+      font-size: 17px;
+      font-weight: 500;
     }
 
     .alert-button {
       background-color: var(--blue-primary);
       color: white;
       border: none;
-      padding: 14px 28px;
-      border-radius: 10px;
+      padding: 16px 32px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 600;
       transition: background-color 0.3s;
     }
 
     .alert-button:hover {
       background-color: #1557b0;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(26, 115, 232, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--blue-primary);
+      animation: spin 1s ease-in-out infinite;
+      margin: 20px auto 24px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     @keyframes fadeInUp {
@@ -186,7 +214,6 @@
       touch-action: manipulation;
     }
 
-    /* Prevent double-tap zoom */
     html {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -203,8 +230,8 @@
     <h1>Create Your BluePay Account</h1>
 
     <input type="text" id="username" placeholder="Username" required />
-    <input type="email" id="email" placeholder="Email Address" required />
-    <input type="password" id="password" placeholder="Password (min. 6 chars)" required />
+    <input type="email" id="email" placeholder="Email Address" required autocomplete="email" />
+    <input type="password" id="password" placeholder="Password (min. 6 chars)" required autocomplete="new-password" />
 
     <button id="signupBtn">Sign Up</button>
 
@@ -233,7 +260,32 @@
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // ======== SIGN UP BUTTON — WITH FIELD VALIDATION ALERT ========
+    // ======== BLOCK MULTIPLE ACCOUNTS — ONE PER DEVICE ========
+    if (localStorage.getItem('bluepay_registered')) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'alert';
+      alertDiv.innerHTML = `
+        <h2>Sign Up for BluePay</h2>
+        <p>You’ve already signed up on this device.</p>
+        <p>Please log in instead.</p>
+        <button class="alert-button">OK</button>
+      `;
+      document.body.appendChild(alertDiv);
+
+      alertDiv.querySelector('.alert-button').addEventListener('click', function() {
+        document.body.removeChild(alertDiv);
+        window.location.href = "login.html";
+      });
+
+      // Disable form
+      document.getElementById('signupBtn').disabled = true;
+      document.getElementById('signupBtn').textContent = "Already Signed Up";
+      document.getElementById('username').disabled = true;
+      document.getElementById('email').disabled = true;
+      document.getElementById('password').disabled = true;
+    }
+
+    // ======== SIGN UP BUTTON ========
     document.getElementById('signupBtn').addEventListener('click', function() {
       const username = document.getElementById('username').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -243,7 +295,7 @@
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert';
         alertDiv.innerHTML = `
-          <h2>Missing Information</h2>
+          <h2>Sign Up for BluePay</h2>
           <p>Please fill in all fields to continue:</p>
           <ul style="text-align:left; margin:16px 0; padding-left:20px; color:#555;">
             <li>Username</li>
@@ -257,7 +309,6 @@
         alertDiv.querySelector('.alert-button').addEventListener('click', function() {
           document.body.removeChild(alertDiv);
         });
-
         return;
       }
 
@@ -266,44 +317,55 @@
 
       auth.createUserWithEmailAndPassword(email, password)
         .then(function(userCredential) {
-          // ✅ Award 50,000.00 to localStorage — ONLY ONCE PER DEVICE
-          localStorage.setItem('bluepay_balance', '50,000.00');
-
-          // Optional: Save user name for dashboard
+          // ✅ Mark device as registered — ONE ACCOUNT ONLY
+          localStorage.setItem('bluepay_registered', 'true');
           localStorage.setItem('bluepay_user', JSON.stringify({
             name: username,
             email: email,
             uid: userCredential.user.uid
           }));
 
-          // ✅ Beautiful success alert
+          // ✅ Show LOADER + SUCCESS MESSAGE — NO 50,000 MENTION
           const alertDiv = document.createElement('div');
           alertDiv.className = 'alert';
           alertDiv.innerHTML = `
-            <h2>Welcome to BluePay!</h2>
-            <p>Congratulations! You've been awarded ₦50,000.00.</p>
-            <p>Your account is ready. Welcome aboard!</p>
-            <button class="alert-button">Continue</button>
+            <h2>Sign Up for BluePay</h2>
+            <p>You have signed up successfully!</p>
+            <div class="loader"></div>
           `;
           document.body.appendChild(alertDiv);
 
-          alertDiv.querySelector('.alert-button').addEventListener('click', function() {
+          // Wait 3 seconds → redirect to login
+          setTimeout(() => {
             document.body.removeChild(alertDiv);
             window.location.href = "login.html";
-          });
+          }, 3000);
+
         })
         .catch(function(error) {
           let msg = "Sign-up failed.";
           if (error.code === "auth/email-already-in-use") msg = "This email is already registered.";
           else if (error.code === "auth/invalid-email") msg = "Invalid email format.";
           else if (error.code === "auth/weak-password") msg = "Password must be at least 6 characters.";
-          alert(msg);
-          document.getElementById('signupBtn').disabled = false;
-          document.getElementById('signupBtn').textContent = "Sign Up";
+          
+          const alertDiv = document.createElement('div');
+          alertDiv.className = 'alert';
+          alertDiv.innerHTML = `
+            <h2>Sign Up for BluePay</h2>
+            <p>${msg}</p>
+            <button class="alert-button">Try Again</button>
+          `;
+          document.body.appendChild(alertDiv);
+
+          alertDiv.querySelector('.alert-button').addEventListener('click', function() {
+            document.body.removeChild(alertDiv);
+            document.getElementById('signupBtn').disabled = false;
+            document.getElementById('signupBtn').textContent = "Sign Up";
+          });
         });
     });
 
-    // ======== CONTINUE WITH GOOGLE BUTTON — BEAUTIFUL ALERT ========
+    // ======== CONTINUE WITH GOOGLE BUTTON ========
     document.getElementById('googleBtn').addEventListener('click', function() {
       const alertDiv = document.createElement('div');
       alertDiv.className = 'alert';
