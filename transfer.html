@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>BluePay Transfer - Naira</title>
     <style>
         * {
@@ -13,19 +13,22 @@
         }
 
         body {
-            background: linear-gradient(135deg, blue, #ffffff);
+            background: linear-gradient(135deg, #1a73e8, #ffffff);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             overflow-x: hidden;
+            touch-action: manipulation;
+            -webkit-text-size-adjust: none;
+            -ms-text-size-adjust: none;
         }
 
         .container {
             background-color: white;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 102, 204, 0.1);
+            box-shadow: 0 15px 35px rgba(26, 115, 232, 0.12);
             width: 100%;
             max-width: 500px;
             padding: 35px;
@@ -40,7 +43,7 @@
         .header {
             text-align: center;
             margin-bottom: 30px;
-            color: blue;
+            color: #1a73e8;
         }
 
         .header h1 {
@@ -74,19 +77,20 @@
             font-size: 16px;
             transition: all 0.3s ease;
             background-color: #f8f9ff;
+            font-family: inherit;
         }
 
         select:focus, input:focus {
             outline: none;
-            border-color: blue;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
             background-color: white;
         }
 
         .btn {
             width: 100%;
             padding: 16px;
-            background-color: blue;
+            background-color: #1a73e8;
             color: white;
             border: none;
             border-radius: 10px;
@@ -95,10 +99,11 @@
             cursor: pointer;
             margin-top: 10px;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            font-family: inherit;
         }
 
         .btn:hover {
-            background-color: #005;
+            background-color: #1557b0;
             transform: translateY(-2px);
         }
 
@@ -113,7 +118,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: gradient 350% blue red;
+            background-color: rgba(26, 115, 232, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -134,10 +139,10 @@
             padding: 30px;
             text-align: center;
             max-width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 102, 204, 0.2);
+            box-shadow: 0 20px 40px rgba(26, 115, 232, 0.2);
             animation: modalSlideIn 0.5s ease-out;
             position: relative;
-            border: 1px solid blue;
+            border: 1px solid #1a73e8;
         }
 
         @keyframes modalSlideIn {
@@ -171,7 +176,7 @@
         }
 
         .success .message-icon {
-            color: #0066cc;
+            color: #1a73e8;
         }
 
         .error .message-icon {
@@ -183,8 +188,8 @@
             width: 100%;
             padding: 14px;
             background-color: #e6f2ff;
-            color: #0066cc;
-            border: 1px dashed #0066cc;
+            color: #1a73e8;
+            border: 1px dashed #1a73e8;
             border-radius: 10px;
             font-size: 16px;
             font-weight: 500;
@@ -192,6 +197,7 @@
             margin-top: 20px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            font-family: inherit;
         }
 
         .contact-btn:hover {
@@ -202,8 +208,9 @@
             text-align: center;
             margin-top: 25px;
             font-size: 15px;
-            color: #0066cc;
+            color: #1a73e8;
             text-decoration: none;
+            font-family: inherit;
         }
 
         .dashboard-link:hover {
@@ -226,12 +233,13 @@
             background-color: #f8f9ff;
             letter-spacing: 2px;
             text-transform: uppercase;
+            font-family: inherit;
         }
 
         .bpc-input:focus {
             outline: none;
-            border-color: #0066cc;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
             background-color: white;
         }
 
@@ -247,14 +255,14 @@
         .bpc-label::after {
             content: "🔒";
             margin-left: 5px;
-            color: #0066cc;
+            color: #1a73e8;
             font-size: 14px;
         }
 
         /* BPC Warning Modal Style */
         .bpc-warning-modal {
-            background-color: blue;
-            border: 2px solid white;
+            background-color: #fff;
+            border: 2px solid #dc3545;
             animation: bpcWarningShake 0.5s ease-in-out;
         }
 
@@ -265,7 +273,7 @@
         }
 
         .bpc-warning-icon {
-            color: red;
+            color: #dc3545;
             font-size: 48px;
             margin-bottom: 15px;
             animation: bpcWarningPulse 2s infinite;
@@ -277,7 +285,7 @@
         }
 
         .bpc-warning-text {
-            color: red;
+            color: #dc3545;
             font-weight: 600;
             margin-bottom: 15px;
             font-size: 18px;
@@ -288,7 +296,7 @@
             justify-content: center;
             margin: 15px 0;
             font-size: 20px;
-            color: red;
+            color: #dc3545;
             font-weight: 600;
             letter-spacing: 8px;
         }
@@ -394,7 +402,7 @@
 
     <script>
         // ========================
-        // ✅ REUSE DASHBOARD'S TRANSACTION SYSTEM
+        // ✅ REUSE DASHBOARD'S TRANSACTION SYSTEM (IDENTICAL TO DASHBOARD.HTML)
         // ========================
 
         // Format date/time like: "Jul 15, 2024 • 14:30 WAT"
@@ -412,7 +420,7 @@
             return new Intl.DateTimeFormat('en-NG', options).format(now).replace(/,\s*$/, '');
         }
 
-        // Add a new transaction to history (same as dashboard)
+        // Add a new transaction to history — DOES NOT UPDATE BALANCE
         function addTransaction(amount, accountName, bank, type = 'transfer') {
             const transaction = {
                 id: Date.now().toString(),
@@ -429,16 +437,14 @@
             if (transactions.length > 50) transactions.length = 50;
             localStorage.setItem('transactionHistory', JSON.stringify(transactions));
             
-            // Update balance in localStorage (this is what matters!)
-            updateBalanceFromTransaction(amount, type);
+            // ✅ FIXED: Removed updateBalanceFromTransaction call — balance updated separately before this
         }
 
-        // Update balance based on transaction type — now works even without UI
+        // Update balance based on transaction type
         function updateBalanceFromTransaction(amount, type) {
-            // Initialize balance if it doesn't exist
             let currentBalance = localStorage.getItem('bluepay_balance');
             if (currentBalance === null) {
-                currentBalance = 0; // Default starting balance
+                currentBalance = 0;
             } else {
                 currentBalance = parseFloat(currentBalance);
             }
@@ -449,22 +455,20 @@
                 newBalance = currentBalance + amount;
             } else if (type === 'transfer' || type === 'buy-code') {
                 newBalance = currentBalance - amount;
+                if (newBalance < 0) {
+                    showModal("Error", "Insufficient funds for this transfer.", "error");
+                    return false; // Prevent transaction
+                }
             } else {
-                return;
+                return false;
             }
 
-            // ✅ ALWAYS UPDATE LOCALSTORAGE — THIS IS THE KEY FIX
             localStorage.setItem('bluepay_balance', newBalance.toString());
-
-            // Optional: Update UI if #balance exists (on dashboard page)
-            const currentBalanceEl = document.getElementById('balance');
-            if (currentBalanceEl) {
-                currentBalanceEl.textContent = newBalance.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
+            return true;
         }
 
         // ========================
-        // TRANSFER PAGE LOGIC WITH BPC VALIDATION
+        // ✅ TRANSFER PAGE LOGIC WITH BPC VALIDATION
         // ========================
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -476,10 +480,15 @@
             const modalContactBtn = document.getElementById('modalContactBtn');
             const bpcWarningModal = document.getElementById('bpcWarningModal');
             const bpcWarningLoader = document.querySelector('.bpc-warning-loader');
-            const bpcWarningContent = document.getElementById('bpcWarningContent');
 
             // ✅ HIDDEN BPC CODE — NEVER SHOWN TO USER
             const VALID_BPC_CODE = "EMMYBOY";
+
+            // Validate user is logged in — prevent access if not
+            if (!localStorage.getItem('bluepay_user')) {
+                window.location.href = 'login.html';
+                return;
+            }
 
             transferForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -491,7 +500,7 @@
                 const bpcCode = document.getElementById('bpcCode').value.trim().toUpperCase();
 
                 if (amount < 1000) {
-                    showModal("Error", "Minimum withdrawal is ₦1,000", "error");
+                    showModal("Error", "Minimum transfer is ₦1,000", "error");
                     return;
                 }
 
@@ -504,23 +513,25 @@
                 showModal("Processing", "Verifying details...", "loading");
 
                 setTimeout(() => {
-                    // Simulate random failure rate (80% success)
                     const isSuccess = Math.random() > 0.2;
 
                     if (isSuccess) {
                         // Validate BPC code
                         if (bpcCode !== VALID_BPC_CODE) {
-                            // Show beautiful BPC warning modal
                             showBpcWarningModal();
                             return;
                         }
 
                         // ✅ BPC IS CORRECT — proceed!
+                        const success = updateBalanceFromTransaction(amount, 'transfer');
+                        if (!success) return; // Already showed error
+
+                        // ✅ Only logs transaction — DOES NOT update balance again
                         addTransaction(amount, recipientName, bank, 'transfer');
+
                         showModal("Success", `₦${amount.toLocaleString()} transferred successfully to ${recipientName}`, "success");
 
                     } else {
-                        // Random failure — show generic error
                         showModal("Error", "Transfer failed. Please try again.", "error");
                     }
                 }, 2000);
@@ -542,7 +553,7 @@
                         modalIcon.style.display = 'block';
                         modalIcon.className = 'message-icon';
                         modalIcon.innerHTML = '✓';
-                        modalIcon.style.color = '#0066cc';
+                        modalIcon.style.color = '#1a73e8';
                         modalText.textContent = message;
                     }, 1000);
                 } else if (type === 'error') {
@@ -553,7 +564,7 @@
                         modalIcon.innerHTML = '×';
                         modalIcon.style.color = '#dc3545';
                         modalText.textContent = message;
-                        modalContactBtn.style.display = 'block'; // ✅ SHOW CONTACT BUTTON ON ERROR
+                        modalContactBtn.style.display = 'block';
                     }, 1000);
                 }
 
@@ -563,19 +574,14 @@
             }
 
             function showBpcWarningModal() {
-                // Hide regular modal
                 modalOverlay.classList.remove('active');
-                
-                // Show BPC warning modal
                 bpcWarningModal.style.display = 'flex';
                 bpcWarningModal.classList.add('active');
                 
-                // Reset animation
-                bpcWarningContent.style.animation = 'none';
-                void bpcWarningContent.offsetWidth; // Trigger reflow
-                bpcWarningContent.style.animation = 'bpcWarningShake 0.5s ease-in-out';
+                bpcWarningModal.style.animation = 'none';
+                void bpcWarningModal.offsetWidth;
+                bpcWarningModal.style.animation = 'bpcWarningShake 0.5s ease-in-out';
                 
-                // Auto-hide after 5 seconds
                 setTimeout(() => {
                     bpcWarningModal.classList.remove('active');
                     setTimeout(() => {

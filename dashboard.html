@@ -2,35 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Dashboard - BluePay</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
   <style>
     :root {
-      --blue-primary: #005BAA;
-      --blue-light: #0071CC;
-      --white: white;
-      --text-gray: #333;
-      --border-gray: #e0e0e0;
+      --blue-primary: #1a73e8;
+      --blue-dark: #1557b0;
+      --white: #ffffff;
+      --text-gray: #333333;
+      --border-gray: #dce0e6;
     }
 
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
       background-color: var(--white);
-      color:red;
+      color: var(--text-gray);
       min-height: 100vh;
-      font-size: 1rem; /* Changed from 3rem to make it more readable */
+      font-size: 1rem;
       position: relative;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: none;
+      -ms-text-size-adjust: none;
     }
 
     .header {
       display: flex;
-      justify-content: space-between;
+      justify-content:space-between;
       align-items: center;
       padding: 1rem 1.5rem;
       background-color:blue;
@@ -48,13 +52,12 @@
     }
 
     .user-name {
-      font-weight: bold;
+      font-weight:bold;
       font-size: 1.1rem;
       margin-left: 0.5rem;
       color: white;
     }
 
-    /* ✅ UPDATED: Facebook-style notification bell (cleaner, more modern) */
     .notification-icon-container {
       position: relative;
       cursor: pointer;
@@ -69,10 +72,9 @@
     
     .notification-icon:hover {
       fill: darkred;
-      background-color:light blue;
+      background-color: lightblue;
     }
     
-    /* Notification badge styles */
     .notification-badge {
       position: absolute;
       top: -5px;
@@ -97,17 +99,18 @@
 
     .balance-container {
       text-align: center;
-      padding: 0.9rem;
-      background-color: blue;
+      padding: 0.20rem;
+      background-color:blue;
       color: white;
-      border-bottom-left-radius: 0.2px;
-      border-bottom-right-radius: 200px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 90px;
       position: relative;
+      margin: 10rem 10rem 1;
     }
 
     .balance {
       font-size: 3rem;
-      font-weight: bold;
+      font-weight: 700;
       margin: 0.5rem 0;
       letter-spacing: -1px;
     }
@@ -122,6 +125,7 @@
       gap: 1rem;
       justify-content: center;
       margin: 1.5rem 0;
+      padding: 0 1rem;
     }
 
     .action-btn {
@@ -131,13 +135,13 @@
       justify-content: center;
       width: 75px;
       height: 75px;
-      background-color:blue;
+      background-color: var(--blue-primary);
       border-radius: 16px;
       color: white;
-      font-weight: bold; /* Fixed: was 'font-size: bold' */
+      font-weight: 600;
       cursor: pointer;
       transition: transform 0.2s;
-      box-shadow: 0 2px 8px rgba(0, 91, 170, 0.2);
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2);
     }
 
     .action-btn:hover {
@@ -149,7 +153,8 @@
       width: 28px;
       height: 28px;
       margin-bottom: 0.3rem;
-      fill: white;
+      fill:white;
+      background-color:darkblue;
     }
 
     .top-up-btn {
@@ -167,11 +172,11 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background-color 0.9s;
+      transition: background-color 0.3s;
     }
 
     .top-up-btn:hover {
-      background-color: #004488;
+      background-color: blue;
     }
 
     .promo-container {
@@ -180,7 +185,7 @@
       max-width: 300px;
       overflow: hidden;
       border-radius: 16px;
-      height: 80px;
+      height: 90px;
       position: relative;
       background-color: blue;
       border: 1px solid var(--border-gray);
@@ -188,13 +193,13 @@
 
     .promo-slider {
       display: flex;
-      transition: transform 0.5s ease-in-out;
+      transition: transform 0.6s ease-in-out;
       height: 100%;
     }
 
     .promo-item {
-      min-width: 100%;
-      padding: 0.8rem 1rem;
+      min-width: 90%;
+      padding: 0.3rem 1rem;
       display: flex;
       align-items: center;
       font-size: 0.85rem;
@@ -203,6 +208,7 @@
       border-radius: 16px;
       margin: 0 0.5rem;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      line-height: 1.3;
     }
 
     .promo-icon {
@@ -214,29 +220,43 @@
 
     .section-title {
       color: var(--blue-primary);
-      font-size: 0.1rem;
-      margin: 1.5rem 0 0.5rem 1rem;
+      font-size: 1rem;
+      margin: 1.8rem 0 0.5rem 1rem;
       font-weight: 600;
     }
 
     .transactions {
-      padding:0.1rem;
-      background-color:white;
+      padding: 0.5rem;
+      background-color: white;
       border-top: 1px solid var(--border-gray);
       height: 250px;
       overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .transactions::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .transactions::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .transactions::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
     }
 
     .footer {
       display: flex;
       justify-content: space-around;
       background-color: white;
-      padding: 1rem;
+      padding: 1rem 0;
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      border-top:blue;
+      border-top: 1px solid var(--border-gray);
       z-index: 10;
     }
 
@@ -244,15 +264,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      color: blue;
+      color: #6b7c90;
       font-size: 0.8rem;
       text-decoration: none;
       padding: 0.5rem;
     }
 
     .nav-item.active {
-      color: blue;
-      background-color:white;
+      color: var(--blue-primary);
     }
 
     .nav-icon {
@@ -280,24 +299,37 @@
       justify-content: center;
       font-size: 1.5rem;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 91, 170, 0.3);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
       z-index: 100;
     }
 
     .float-button:hover {
-      background-color: #004488;
+      background-color: var(--blue-dark);
+    }
+
+    /* Prevent text selection */
+    .action-btn, .top-up-btn, .nav-item {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Prevent accidental zoom */
+    body {
+      -webkit-text-size-adjust: none;
+      -ms-text-size-adjust: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header with UPDATED Facebook-style Bell Icon -->
+  <!-- Header -->
   <div class="header">
     <div style="display: flex; align-items: center;">
-      <img src="https://via.placeholder.com/40  " alt="Profile" class="profile-pic" />
+      <img src="https://via.placeholder.com/40" alt="Profile" class="profile-pic" />
       <span class="user-name" id="userName">godswille922</span>
     </div>
-    <!-- ✅ NEW: Facebook-style notification bell with badge -->
     <div class="notification-icon-container" onclick="window.location.href='notification.html'">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="notification-icon">
         <path d="M12 22c1.1 0 2-5.9 2-2h-4c0 1.1.8 5 2 2zm0-20v20h10l-1.9 1.9V9h-1v10h1v2h-4v-2h1V8h1V4h2z"/>
@@ -312,72 +344,72 @@
     <div class="available-balance">Available Balance</div>
   </div>
 
-  <!-- Promo Carousel -->
+  <!-- Promo Carousel with YOUR EXACT MESSAGES -->
   <div class="promo-container">
     <div class="promo-slider" id="promoSlider">
+      <!-- Banner 1 -->
       <div class="promo-item">
         <svg class="promo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#005BAA"/>
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#1a73e8"/>
         </svg>
-        Get your BPC code cheaper now — offer ends Jan 7, 2023!
+        Get your code now available from vendor
       </div>
+      
+      <!-- Banner 2 -->
       <div class="promo-item">
         <svg class="promo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 22l5-5h-3V8h-4v9H7l5 5z" fill="blue"/>
+          <path d="M12 22l5-5h-3V8h-4v9H7l5 5z" fill="#1a73e8"/>
         </svg>
-        Claim cash rewards every Monday — automatic deposit dont miss out!
+        Buy code at cheaper rates now — promo ending Dec 20
       </div>
+      
+      <!-- Banner 3 -->
       <div class="promo-item">
         <svg class="promo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 22c1.1 0 2-.9 2-2h-2c0 1.1-.9 2-2 2H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2c0-1.1-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2v2h4v-2c0-1.1-.9-2-2-2z" fill="#005BAA"/>
+          <path d="M12 22c1.1 0 2-.9 2-2h-2c0 1.1-.9 2-2 2H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2c0-1.1-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2v2h4v-2c0-1.1-.9-2-2-2z" fill="#1a73e8"/>
         </svg>
-        Refer a friend → and stand a 
-        chance to win amazing offers
+        Be a partaker of all events
       </div>
     </div>
   </div>
 
-  <!-- ACTIONS — ALL ICONS REDESIGNED FOR PROFESSIONALISM -->
+  <!-- Actions -->
   <div class="actions">
-    <!-- TRANSFER: Clean arrow with motion -->
     <button class="action-btn" onclick="window.location.href='transfer.html'">
       <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 2l-5 5h3v10h4V7h3l-5-5z" fill="#005BAA"/>
+        <path d="M12 2l-5 5h3v10h4V7h3l-5-5z" fill="#1a73e8"/>
       </svg>
       Transfer
     </button>
 
-    <!-- RECEIVE: Incoming money with upward flow -->
     <button class="action-btn" onclick="window.location.href='receive.html'">
       <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 22l5-5h-3V8h-4v9H7l5 5z" fill="#005BAA"/>
+        <path d="M12 22l5-5h-3V8h-4v9H7l5 5z" fill="#1a73e8"/>
       </svg>
       Receive
     </button>
 
-    <!-- BUY CODE: Modern keypad + checkmark -->
     <button class="action-btn" onclick="window.location.href='buy-code.html'">
       <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="#005BAA" stroke-width="1.5"/>
-        <path d="M7 8h10M7 12h10M7 16h10" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M12 19l2 2 4-4" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="#1a73e8" stroke-width="1.5"/>
+        <path d="M7 8h10M7 12h10M7 16h10" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12 19l2 2 4-4" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       Buy Code
     </button>
 
-    <!-- TOP UP: Card + plus in perfect balance -->
     <button class="action-btn" onclick="window.location.href='topup.html'">
       <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <rect x="4" y="8" width="16" height="8" rx="2" ry="2" fill="#005BAA"/>
-        <path d="M12 12v-4m0 4h4m-4 0h-4" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 16v4m0-4h4m-4 0h-4" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="4" y="8" width="16" height="8" rx="2" ry="2" fill="#1a73e8"/>
+        <path d="M12 12v-4m0 4h4m-4 0h-4" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 16v4m0-4h4m-4 0h-4" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       Top Up
     </button>
   </div>
 
-  <!-- Top Up Button (secondary) -->
-  <button class="top-up-btn">
+  <!-- Secondary Top-Up Button -->
+  <button class="top-up-btn" onclick="window.location.href='topup.html'">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="white" style="margin-right: 0.5rem;">
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
     </svg>
@@ -386,13 +418,12 @@
 
   <!-- Recent Transactions -->
   <div class="section-title">Recent Transactions</div>
-  <div class="transactions">
+  <div class="transactions" id="transactionList">
     <p style="color: var(--text-gray); padding: 0.5rem;">No recent transactions</p>
   </div>
 
-  <!-- BOTTOM NAVIGATION — ALL ICONS UPGRADED TO MATCH DESIGN LANGUAGE -->
+  <!-- Bottom Navigation -->
   <div class="footer">
-    <!-- HOME: Clean house icon with roof and door -->
     <a href="dashboard.html" class="nav-item active">
       <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
@@ -401,22 +432,20 @@
       Home
     </a>
 
-    <!-- SCAN: Crisp QR code with corner alignment -->
     <a href="scan.html" class="nav-item">
       <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <rect x="4" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="blue" stroke-width="1.5"/>
-        <rect x="8" y="7" width="1" height="1" fill="blue"/>
-        <rect x="13" y="7" width="4" height="4" fill="blue"/>
-        <rect x="7" y="13" width="4" height="4" fill="blue"/>
+        <rect x="4" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="#1a73e8" stroke-width="1.5"/>
+        <rect x="8" y="7" width="1" height="1" fill="#1a73e8"/>
+        <rect x="13" y="7" width="4" height="4" fill="#1a73e8"/>
+        <rect x="7" y="13" width="4" height="4" fill="#1a73e8"/>
       </svg>
       Scan
     </a>
 
-    <!-- PROFILE: Minimalist human silhouette with clean lines -->
     <a href="profile.html" class="nav-item">
       <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <circle cx="12" cy="9" r="9"/>
-        <path d="M12 11v7M6 18h12" fill="none" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+        <path d="M12 11v7M6 18h12" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round"/>
       </svg>
       Profile
     </a>
@@ -428,47 +457,29 @@
   </div>
 
   <script>
-    // Load user data and balance
-    const user = localStorage.getItem('bluepay_user');
-    const balance = localStorage.getItem('bluepay_balance') || '50,000.00';
+    // ======== FIREBASE CONFIG ========
+    const firebaseConfig = {
+      apiKey: "AIzaSyCusJ_rFuOWwy1QFZedtyJr7igCeiIg3a0",
+      authDomain: "my-sign-up-and-login.firebaseapp.com",
+      projectId: "my-sign-up-and-login",
+      storageBucket: "my-sign-up-and-login.firebasestorage.app",
+      messagingSenderId: "1009128333653",
+      appId: "1:1009128333653:web:15c1609ca3fbd4720c0fdc",
+      measurementId: "G-2SS5J1Y13C"
+    };
 
-    document.getElementById('balance').textContent = balance;
-
-    if (user) {
-      const userData = JSON.parse(user);
-      document.getElementById('userName').textContent = userData.name || userData.email.split('@')[0];
-    } else {
-      window.location.href = 'login.html';
+    // Initialize Firebase if available
+    if (typeof firebase !== 'undefined') {
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+      } catch (err) {
+        console.warn("Firebase init error:", err);
+      }
     }
 
-    // Auto-slide promo banners
-    const slider = document.getElementById('promoSlider');
-    const items = document.querySelectorAll('.promo-item');
-    let currentIndex = 0;
-
-    function nextSlide() {
-      currentIndex = (currentIndex + 1) % items.length;
-      slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-    }
-
-    setInterval(nextSlide, 4000);
-    nextSlide();
-
-    // ————————————————————————————————————————————————
-    // ✅ TRANSACTION HISTORY SYSTEM — INTEGRATED INTO EXISTING "RECENT TRANSACTIONS"
-    // ————————————————————————————————————————————————
-
-    // Initialize transaction history if not exists
-    if (!localStorage.getItem('transactionHistory')) {
-      localStorage.setItem('transactionHistory', JSON.stringify([]));
-    }
-
-    // Initialize notification count if not exists
-    if (!localStorage.getItem('notificationCount')) {
-      localStorage.setItem('notificationCount', '0');
-    }
-
-    // Format date/time like: "Jul 15, 2024 • 14:30 WAT"
+    // ======== FORMAT DATE TIME ========
     function formatDateTime() {
       const now = new Date();
       const options = { 
@@ -483,29 +494,56 @@
       return new Intl.DateTimeFormat('en-NG', options).format(now).replace(/,\s*$/, '');
     }
 
-    // Render all transactions into .transactions div
+    // ======== LOAD USER & BALANCE FROM LOCALSTORAGE ========
+    function loadUserAndBalance() {
+      const user = localStorage.getItem('bluepay_user');
+      const balance = localStorage.getItem('bluepay_balance');
+
+      // If user data exists, show it
+      if (user) {
+        const userData = JSON.parse(user);
+        document.getElementById('userName').textContent = userData.name || userData.email.split('@')[0];
+      }
+
+      // If balance exists, show it
+      if (balance) {
+        document.getElementById('balance').textContent = balance;
+      } else {
+        // Fallback (shouldn't happen if sign-up works)
+        document.getElementById('balance').textContent = '50,000.00';
+        localStorage.setItem('bluepay_balance', '50,000.00');
+      }
+
+      // ❗ CRITICAL FIX: If NO user data → redirect to login (prevents loop)
+      if (!user) {
+        window.location.href = 'login.html';
+        return; // Exit early to prevent further execution
+      }
+    }
+
+    // ======== RENDER TRANSACTIONS FROM LOCALSTORAGE ========
     function renderTransactions() {
-      const transactions = JSON.parse(localStorage.getItem('transactionHistory'));
-      const transactionsContainer = document.querySelector('.transactions');
+      const transactions = JSON.parse(localStorage.getItem('transactionHistory') || '[]');
+      const container = document.getElementById('transactionList');
 
       if (!transactions || transactions.length === 0) {
-        transactionsContainer.innerHTML = '<p style="color: var(--text-gray); padding: 0.5rem;">No recent transactions</p>';
+        container.innerHTML = '<p style="color: var(--text-gray); padding: 0.5rem;">No recent transactions</p>';
         return;
       }
 
-      // Show latest 5 transactions (scrollable)
+      // Show latest 5 transactions
       const recent = transactions.slice(0, 5);
-      transactionsContainer.innerHTML = recent.map(item => `
+      container.innerHTML = recent.map(item => `
         <div style="
           padding: 0.7rem;
           margin-bottom: 0.5rem;
           background-color: #f8f9ff;
           border-radius: 12px;
-          border-left: 4px solid #005BAA;
+          border-left: 4px solid #1a73e8;
           font-size: 0.9rem;
           color: #2d3748;
         ">
-          <div style="font-weight: 600; color: #005BAA;">₦${item.amount.toLocaleString()}</div>
+          <div style="font-weight: 600; color: #1a73e8;">₦${item.amount.toLocaleString()}</div>
           <div style="margin-top: 0.2rem;">To: ${item.accountName}</div>
           <div style="font-size: 0.8rem; color: #6b7c90; margin-top: 0.3rem;">
             ${item.bank} • ${item.date}
@@ -514,7 +552,7 @@
       `).join('');
     }
 
-    // Add a new transaction to history
+    // ======== ADD TRANSACTION (Called from transfer.html) ========
     function addTransaction(amount, accountName, bank, type = 'transfer') {
       const transaction = {
         id: Date.now().toString(),
@@ -526,102 +564,23 @@
         timestamp: new Date().toISOString()
       };
 
-      // Get existing transactions
       const transactions = JSON.parse(localStorage.getItem('transactionHistory') || '[]');
-      
-      // Add new transaction at the beginning
       transactions.unshift(transaction);
-      
-      // Keep only the last 50 transactions to avoid storage bloat
-      if (transactions.length > 50) {
-        transactions.length = 50;
-      }
-      
-      // Save back to localStorage
+
+      // Keep only last 50 transactions
+      if (transactions.length > 50) transactions.length = 50;
+
       localStorage.setItem('transactionHistory', JSON.stringify(transactions));
-      
-      // Re-render transactions
       renderTransactions();
-      
-      // Update balance if needed
-      updateBalanceFromTransaction(amount, type);
-      
-      // Create notification for this transaction
-      createNotification(type, amount, accountName);
+
+      // Update notification badge
+      let count = parseInt(localStorage.getItem('notificationCount') || '0');
+      count++;
+      localStorage.setItem('notificationCount', count.toString());
+      updateNotificationBadge(count);
     }
 
-    // Update balance based on transaction type
-    function updateBalanceFromTransaction(amount, type) {
-      const currentBalance = parseFloat(document.getElementById('balance').textContent.replace('₦', '').replace(/,/g, ''));
-      let newBalance;
-      
-      if (type === 'topup' || type === 'receive') {
-        newBalance = currentBalance + amount;
-      } else if (type === 'transfer' || type === 'buy-code') {
-        newBalance = currentBalance - amount;
-      } else {
-        return; // Unknown type, don't change balance
-      }
-      
-      // Update displayed balance
-      document.getElementById('balance').textContent = newBalance.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      
-      // Save updated balance to localStorage
-      localStorage.setItem('bluepay_balance', newBalance.toString());
-    }
-
-    // Create a notification for a transaction
-    function createNotification(type, amount, accountName) {
-      // Get current notification count
-      let notificationCount = parseInt(localStorage.getItem('notificationCount') || '0');
-      
-      // Increment count
-      notificationCount++;
-      
-      // Save updated count
-      localStorage.setItem('notificationCount', notificationCount.toString());
-      
-      // Update badge display
-      updateNotificationBadge(notificationCount);
-      
-      // Create notification message
-      let message = '';
-      switch(type) {
-        case 'transfer':
-          message = `Sent ₦${amount.toLocaleString()} to ${accountName}`;
-          break;
-        case 'receive':
-          message = `Received ₦${amount.toLocaleString()} from ${accountName}`;
-          break;
-        case 'topup':
-          message = `Top up of ₦${amount.toLocaleString()} completed`;
-          break;
-        case 'buy-code':
-          message = `Purchased code for ₦${amount.toLocaleString()}`;
-          break;
-        default:
-          message = `New transaction completed`;
-      }
-      
-      // Store notification in array
-      const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-      notifications.unshift({
-        id: Date.now().toString(),
-        message: message,
-        type: type,
-        timestamp: new Date().toISOString(),
-        read: false
-      });
-      
-      // Keep only the last 20 notifications
-      if (notifications.length > 20) {
-        notifications.length = 20;
-      }
-      
-      localStorage.setItem('notifications', JSON.stringify(notifications));
-    }
-
-    // Update the notification badge display
+    // ======== UPDATE NOTIFICATION BADGE ========
     function updateNotificationBadge(count) {
       const badge = document.getElementById('notificationBadge');
       if (count > 0) {
@@ -632,44 +591,51 @@
       }
     }
 
-    // Clear notifications (when viewing notification page)
-    function clearNotifications() {
-      localStorage.setItem('notificationCount', '0');
-      updateNotificationBadge(0);
+    // ======== AUTO-SLIDE PROMO BANNER ========
+    function setupPromoSlider() {
+      const slider = document.getElementById('promoSlider');
+      const items = document.querySelectorAll('.promo-item');
+      let currentIndex = 0;
+
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % items.length;
+        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+      }
+
+      setInterval(nextSlide, 4000);
+      nextSlide(); // Run immediately
     }
 
-    // Run on page load
-    renderTransactions();
-    
-    // Initialize notification badge
-    const notificationCount = parseInt(localStorage.getItem('notificationCount') || '0');
-    updateNotificationBadge(notificationCount);
-
-    // When navigating to notification page, clear the badge
-    // We'll handle this in notification.html as well
-    document.addEventListener('DOMContentLoaded', function() {
-            // This is just for demo purposes - in real app, transfer/receive pages would call addTransaction()
-      console.log('Transaction system initialized. To test, use: addTransaction(1000, "John Doe", "GTBank", "transfer")');
-      
-      // Check if we're on notification page and clear notifications
-      if (window.location.pathname.includes('notification.html')) {
-        clearNotifications();
+    // ======== PREVENT ZOOM ON TOUCH DEVICES ========
+    document.addEventListener('touchstart', function(event) {
+      if (event.touches.length > 1) {
+        event.preventDefault();
       }
-    });
+    }, { passive: false });
 
-    // Add functionality to simulate transactions for testing
-    // In a real app, these would be triggered by form submissions or API calls
-    window.addTransaction = addTransaction;
-    
-    // Add event listener for when user navigates back to dashboard from notification page
-    // This ensures badge updates even if user uses browser back button
-    window.addEventListener('pageshow', function() {
-      if (window.location.pathname.includes('dashboard.html') || window.location.pathname === '/') {
-        const notificationCount = parseInt(localStorage.getItem('notificationCount') || '0');
-        updateNotificationBadge(notificationCount);
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
+    // ======== INIT ON PAGE LOAD ========
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserAndBalance();     // ✅ This prevents the login loop!
+      renderTransactions();     // ✅ Loads transactions saved from transfer.html
+      setupPromoSlider();       // ✅ Slides your 3 custom promos
+      updateNotificationBadge(parseInt(localStorage.getItem('notificationCount') || '0'));
+
+      // Optional: Simulate first transaction for demo
+      if (localStorage.getItem('transactionHistory') === null) {
+        setTimeout(() => {
+          addTransaction(2500, "John Doe", "GTBank", "transfer");
+        }, 1500);
       }
     });
   </script>
-
 </body>
 </html>
