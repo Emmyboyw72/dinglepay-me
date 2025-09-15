@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Sign Up - BluePay</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
   <style>
@@ -410,6 +410,22 @@
     function hideLoader() {
       document.getElementById('bpLoader').classList.remove('active');
     }
+
+    // ======== PREVENT ZOOM ON TOUCH DEVICES ========
+    document.addEventListener('touchstart', function(event) {
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
 
     // ======== SIGN UP BUTTON — ALWAYS ENABLED, ALWAYS SAYS “Sign Up” ========
     document.getElementById('signupBtn').addEventListener('click', function() {

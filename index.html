@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>BluePay - Welcome</title>
   <style>
     :root {
@@ -85,6 +85,23 @@
   </p>
 
   <script>
+    // Prevent pinch-to-zoom on touch devices (mobile/tablet)
+    document.addEventListener('touchstart', function(event) {
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
+    // Redirect after 2 seconds
     setTimeout(() => {
       const isLoggedIn = localStorage.getItem('bluepay_logged_in') === 'true';
       window.location.href = isLoggedIn ? 'login.html' : 'signup.html';

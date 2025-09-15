@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Login - BluePay</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
   <style>
@@ -369,7 +369,7 @@
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Check if already logged in
+    // 👇 AUTO-REDIRECT TO DASHBOARD IF ALREADY LOGGED IN AND HAS BALANCE
     auth.onAuthStateChanged(function(user) {
       if (user && localStorage.getItem('bluepay_balance')) {
         showLoaderThenRedirect();
