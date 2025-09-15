@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>Purchase BPC Code - BluePay</title>
+  <style>
+    :root {
+      --blue-primary: #005BAA;
+      --white: #FFFFFF;
+      --text-gray: #4A5A70;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--white);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 0;
+      color: var(--text-gray);
+      font-size: 1rem;
+    }
+
+    /* ———— TOP HEADER BAR ———— */
+    .header-bar {
+      width: 10%;
+      background-color: var(--blue-primary);
+      color: var(--white);
+      text-align: center;
+      padding: 0.3rem 1rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      font-family: 'Arial Black', sans-serif;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0, 91, 170, 0.2);
+      z-index: 20;
+    }
+
+    /* ———— INITIAL SCREEN ———— */
+    .initial-screen {
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+      padding: 1.8rem 1.5rem;
+      background-color: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 91, 170, 0.08);
+      position: relative;
+      z-index: 10;
+      transition: opacity 0.5s ease-out;
+      margin-top: 1rem;
+    }
+
+    .header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin-bottom: 1.5rem;
+      font-family: 'Arial Black', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .account-box {
+      background-color: #E6F0FF;
+      border-radius: 12px;
+      padding: 1.3rem;
+      margin: 1.2rem 0;
+      text-align: left;
+      border-left: 4px solid var(--blue-primary);
+    }
+
+    .account-label {
+      font-size: 0.85rem;
+      color: #4A5A70;
+      margin-bottom: 0.2rem;
+    }
+
+    .account-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin: 0.1rem 0;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+
+    .copy-btn {
+      display: inline-block;
+      margin-top: 0.7rem;
+      padding: 0.4rem 0.9rem;
+      background-color: var(--blue-primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .copy-btn:hover {
+      background-color: #0077D9;
+    }
+
+    .warning {
+      font-size: 0.8rem;
+      color: #d32f2f;
+      margin: 1.2rem 0;
+      padding: 0.7rem;
+      background-color: #fff0f0;
+      border-radius: 8px;
+      border-left: 3px solid #d32f2f;
+    }
+
+    .amount {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin: 1.2rem 0;
+      font-family: 'Arial Black', sans-serif;
+    }
+
+    .instructions {
+      text-align: left;
+      margin: 1.1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #4A5A70;
+    }
+
+    .instructions strong {
+      color: var(--blue-primary);
+    }
+
+    .payment-btn {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--blue-primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 1.5rem 0;
+      transition: background-color 0.3s;
+    }
+
+    .payment-btn:hover {
+      background-color: #0077D9;
+    }
+
+    /* Footer (always visible) */
+    .footer {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--text-gray);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* ———— FULL-SCREEN LOADER SCREEN ———— */
+    .loader-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--white);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 100;
+      padding: 2rem;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .loader-header {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin-bottom: 1.5rem;
+      font-family: 'Arial Black', sans-serif;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+
+    .bp-logo-container {
+      width: 120px;
+      height: 120px;
+      margin: 2rem auto;
+      position: relative;
+      animation: pulse 2s infinite alternate;
+    }
+
+    .bp-logo {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #005BAA, #0077D9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'Arial Black', sans-serif;
+      text-shadow: 0 2px 10px rgba(0, 91, 170, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 91, 170, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bp-logo::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 60%;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    .bp-logo::after {
+      content: "BP";
+      position: absolute;
+      font-size: 0.7em;
+      color: white;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .please-wait {
+      font-size: 1.2rem;
+      color: var(--text-gray);
+      margin-top: 1rem;
+      font-weight: 500;
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 0.5s forwards;
+    }
+
+    .thank-you {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--text-gray);
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 8.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .header-bar {
+        font-size: 1.2rem;
+        padding: 0.7rem 0.8rem;
+      }
+      
+      .header {
+        font-size: 1.4rem;
+      }
+      
+      .loader-header {
+        font-size: 1.5rem;
+      }
+      
+      .bp-logo {
+        font-size: 2rem;
+      }
+      
+      .bp-logo-container {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER BAR (Blue background, White text) -->
+  <div class="header-bar">BLUE PAY CODE PURCHASE</div>
+
+  <!-- INITIAL SCREEN -->
+  <div class="initial-screen" id="initialScreen">
+    <div class="header">Purchase BPC Code</div>
+
+    <div class="account-box">
+      <p class="account-label">Account Number:</p>
+      <p class="account-value">8124890070</p>
+      <p class="account-label">Account Name:</p>
+      <p class="account-value">Godswill Emmanuel Chukwuemeka</p>
+      <p class="account-label">Bank:</p>
+      <p class="account-value">OPAY</p>
+      <button class="copy-btn" onclick="copyToClipboard()">📋 Copy</button>
+    </div>
+
+    <div class="warning">
+      ⚠️ Your account number is unique to you. Other users have different numbers. Always confirm before paying.
+    </div>
+
+    <div class="amount">₦7,000</div>
+
+    <div class="instructions">
+      <strong>How to Pay:</strong><br>
+      1. Open <strong>OPAY</strong> or any bank app<br>
+      2. Tap <strong>Transfer</strong> → <strong>Bank Transfer</strong><br>
+      3. Enter:<br>
+      &nbsp;&nbsp;• Account Number: <strong>8124890070</strong><br>
+      &nbsp;&nbsp;• Bank: <strong>OPAY</strong><br>
+      &nbsp;&nbsp;• Amount: <strong>₦7,000</strong><br>
+      4. Confirm and complete payment.<br><br>
+      ➤ Then tap <strong>“I have made payment”</strong> below.
+    </div>
+
+    <button class="payment-btn" id="paymentBtn">I have made payment</button>
+
+    <div class="footer">
+      🕒 It only takes 5 minutes to generate your code. Please be patient.<br>
+      💬 We respond to every email within 5–10 minutes during business hours (8 AM – 8 PM WAT).<br><br>
+      Thank you for choosing <strong>BluePay</strong>.
+    </div>
+  </div>
+
+  <!-- FULL-SCREEN LOADER SCREEN -->
+  <div class="loader-screen" id="loaderScreen">
+    <div class="loader-header">Processing Payment</div>
+    <div class="bp-logo-container">
+      <div class="bp-logo"></div>
+    </div>
+    <div class="please-wait">Please wait while we verify your payment...</div>
+    <div class="thank-you">Thank you for choosing BluePay. Please send your transaction receipt to our support team.</div>
+  </div>
+
+  <script>
+    // Copy account number to clipboard
+    function copyToClipboard() {
+      const accountNumber = "8124890070";
+      navigator.clipboard.writeText(accountNumber).then(() => {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: var(--blue-primary);
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          font-size: 0.8rem;
+          z-index: 1000;
+          animation: slideOut 1.5s ease-out;
+        `;
+        toast.textContent = 'Copied!';
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 1500);
+      });
+    }
+
+    // Handle "I have made payment" button click
+    document.getElementById('paymentBtn').addEventListener('click', function() {
+      // Hide initial screen
+      document.getElementById('initialScreen').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('initialScreen').style.display = 'none';
+      }, 500);
+
+      // Show full-screen loader
+      document.getElementById('loaderScreen').style.display = 'flex';
+
+      // After 8 seconds, open email
+      setTimeout(() => {
+        window.location.href = "mailto:bluepay863@gmail.com?subject=BPC Code Request&body=Dear BluePay Team,%0D%0AI have paid ₦7,000 for my BPC code.%0D%0APlease find my transaction receipt attached.%0D%0APlease send me the code as soon as possible.%0D%0AThank you!";
+      }, 8000);
+    });
+  </script>
+
+</body>
+</html>

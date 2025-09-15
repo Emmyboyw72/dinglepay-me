@@ -1,142 +1,674 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dingle Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - BluePay</title>
   <style>
+    :root {
+      --blue-primary: #005BAA;
+      --blue-light: #0071CC;
+      --white: white;
+      --text-gray: #333;
+      --border-gray: #e0e0e0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     body {
-      font-family: sans-serif;
-      background: #e8f5e9;
-      margin: 0;
-      padding: 20px;
+      background-color: var(--white);
+      color:red;
+      min-height: 100vh;
+      font-size: 1rem; /* Changed from 3rem to make it more readable */
+      position: relative;
     }
+
     .header {
-      text-align: center;
-      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background-color:blue;
+      color: white;
+      position: relative;
+      z-index: 10;
     }
-    .balance-box {
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
-      margin-bottom: 20px;
+
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--white);
     }
-    .balance-box h3 {
-      margin: 0;
-      font-size: 16px;
-      color: #888;
-    }
-    .balance-box h2 {
-      margin: 10px 0;
-      font-size: 28px;
-      color: #00b96b;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 30px;
-    }
-    .btn {
-      background: #ffffff;
-      border: 2px solid #00b96b;
-      padding: 14px;
-      border-radius: 15px;
-      text-align: center;
+
+    .user-name {
       font-weight: bold;
-      color: #00b96b;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: 0.2s;
-    }
-    .btn:hover {
-      background: #00b96b;
+      font-size: 1.1rem;
+      margin-left: 0.5rem;
       color: white;
     }
-    .long-btn {
-      grid-column: span 3;
+
+    /* ✅ UPDATED: Facebook-style notification bell (cleaner, more modern) */
+    .notification-icon-container {
+      position: relative;
+      cursor: pointer;
     }
-    .bottom {
+    
+    .notification-icon {
+      width: 20px;
+      height: 20px;
+      fill: white;
+      transition: fill 0.9s;
+    }
+    
+    .notification-icon:hover {
+      fill: darkred;
+      background-color:light blue;
+    }
+    
+    /* Notification badge styles */
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #e74c3c;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
       display: flex;
-      justify-content: space-around;
-      margin-top: 40px;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: bold;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+      z-index: 10;
     }
-    .bottom button {
-      background: #00b96b;
+    
+    .notification-badge.hidden {
+      display: none;
+    }
+
+    .balance-container {
+      text-align: center;
+      padding: 0.9rem;
+      background-color: blue;
+      color: white;
+      border-bottom-left-radius: 0.2px;
+      border-bottom-right-radius: 200px;
+      position: relative;
+    }
+
+    .balance {
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 0.5rem 0;
+      letter-spacing: -1px;
+    }
+
+    .available-balance {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 75px;
+      height: 75px;
+      background-color:blue;
+      border-radius: 16px;
+      color: white;
+      font-weight: bold; /* Fixed: was 'font-size: bold' */
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 91, 170, 0.2);
+    }
+
+    .action-btn:hover {
+      transform: scale(1.05);
+      background-color:darkblue;
+    }
+
+    .action-icon {
+      width: 28px;
+      height: 28px;
+      margin-bottom: 0.3rem;
+      fill: white;
+    }
+
+    .top-up-btn {
+      width: 90%;
+      max-width: 300px;
+      padding: 1rem;
+      background-color: var(--blue-primary);
       color: white;
       border: none;
-      border-radius: 10px;
-      padding: 10px 20px;
-      font-weight: bold;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      transition: background-color 0.9s;
     }
-    #eye {
+
+    .top-up-btn:hover {
+      background-color: #004488;
+    }
+
+    .promo-container {
+      margin: 1rem auto;
+      width: 90%;
+      max-width: 300px;
+      overflow: hidden;
+      border-radius: 16px;
+      height: 80px;
+      position: relative;
+      background-color: blue;
+      border: 1px solid var(--border-gray);
+    }
+
+    .promo-slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      height: 100%;
+    }
+
+    .promo-item {
+      min-width: 100%;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-gray);
+      background-color: white;
+      border-radius: 16px;
+      margin: 0 0.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .promo-icon {
+      width: 25px;
+      height: 25px;
+      margin-right: 0.5rem;
+      fill: var(--blue-primary);
+    }
+
+    .section-title {
+      color: var(--blue-primary);
+      font-size: 0.1rem;
+      margin: 1.5rem 0 0.5rem 1rem;
+      font-weight: 600;
+    }
+
+    .transactions {
+      padding:0.1rem;
+      background-color:white;
+      border-top: 1px solid var(--border-gray);
+      height: 250px;
+      overflow-y: auto;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-around;
+      background-color: white;
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top:blue;
+      z-index: 10;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: blue;
+      font-size: 0.8rem;
+      text-decoration: none;
+      padding: 0.5rem;
+    }
+
+    .nav-item.active {
+      color: blue;
+      background-color:white;
+    }
+
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      fill: #6b7c90;
+      margin-bottom: 0.3rem;
+    }
+
+    .nav-item.active .nav-icon {
+      fill: var(--blue-primary);
+    }
+
+    .float-button {
+      position: absolute;
+      bottom: 100px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: var(--blue-primary);
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
       cursor: pointer;
-      font-size: 18px;
-      margin-left: 10px;
+      box-shadow: 0 4px 12px rgba(0, 91, 170, 0.3);
+      z-index: 100;
+    }
+
+    .float-button:hover {
+      background-color: #004488;
     }
   </style>
 </head>
 <body>
 
+  <!-- Header with UPDATED Facebook-style Bell Icon -->
   <div class="header">
-    <h2>👋 Welcome, <span id="userName">User</span></h2>
+    <div style="display: flex; align-items: center;">
+      <img src="https://via.placeholder.com/40  " alt="Profile" class="profile-pic" />
+      <span class="user-name" id="userName">godswille922</span>
+    </div>
+    <!-- ✅ NEW: Facebook-style notification bell with badge -->
+    <div class="notification-icon-container" onclick="window.location.href='notification.html'">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="notification-icon">
+        <path d="M12 22c1.1 0 2-5.9 2-2h-4c0 1.1.8 5 2 2zm0-20v20h10l-1.9 1.9V9h-1v10h1v2h-4v-2h1V8h1V4h2z"/>
+      </svg>
+      <div class="notification-badge" id="notificationBadge">0</div>
+    </div>
   </div>
 
-  <div class="balance-box">
-    <h3>Available Balance</h3>
-    <h2 id="balance">₦20,000.000 <span id="eye" onclick="toggleBalance()">👁</span></h2>
+  <!-- Balance Section -->
+  <div class="balance-container">
+    <div class="balance">₦<span id="balance">50,000.00</span></div>
+    <div class="available-balance">Available Balance</div>
   </div>
 
-  <div class="grid">
-    <div class="btn long-btn" onclick="go('withdraw.html')">💸 Withdraw</div>
-    <div class="btn" onclick="go('game.html')">🎮 Game</div>
-    <div class="btn" onclick="go('data.html')">📶 Data</div>
-    <div class="btn" onclick="go('electricity.html')">⚡ Electricity</div>
-    <div class="btn" onclick="go('trade.html')">📈 Trade</div>
-    <div class="btn" onclick="go('buycode.html')">💳 Buy Dingle Code</div>
+  <!-- Promo Carousel -->
+  <div class="promo-container">
+    <div class="promo-slider" id="promoSlider">
+      <div class="promo-item">
+        <svg class="promo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#005BAA"/>
+        </svg>
+        Get your BPC code cheaper now — offer ends Jan 7, 2023!
+      </div>
+      <div class="promo-item">
+        <svg class="promo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 22l5-5h-3V8h-4v9H7l5 5z" fill="blue"/>
+        </svg>
+        Claim cash rewards every Monday — automatic deposit dont miss out!
+      </div>
+      <div class="promo-item">
+        <svg class="promo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 22c1.1 0 2-.9 2-2h-2c0 1.1-.9 2-2 2H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2c0-1.1-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2v2h4v-2c0-1.1-.9-2-2-2z" fill="#005BAA"/>
+        </svg>
+        Refer a friend → and stand a 
+        chance to win amazing offers
+      </div>
+    </div>
   </div>
 
-  <div class="bottom">
-    <button onclick="go('history.html')">📜 History</button>
-    <button onclick="logout()">Logout</button>
+  <!-- ACTIONS — ALL ICONS REDESIGNED FOR PROFESSIONALISM -->
+  <div class="actions">
+    <!-- TRANSFER: Clean arrow with motion -->
+    <button class="action-btn" onclick="window.location.href='transfer.html'">
+      <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2l-5 5h3v10h4V7h3l-5-5z" fill="#005BAA"/>
+      </svg>
+      Transfer
+    </button>
+
+    <!-- RECEIVE: Incoming money with upward flow -->
+    <button class="action-btn" onclick="window.location.href='receive.html'">
+      <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 22l5-5h-3V8h-4v9H7l5 5z" fill="#005BAA"/>
+      </svg>
+      Receive
+    </button>
+
+    <!-- BUY CODE: Modern keypad + checkmark -->
+    <button class="action-btn" onclick="window.location.href='buy-code.html'">
+      <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="#005BAA" stroke-width="1.5"/>
+        <path d="M7 8h10M7 12h10M7 16h10" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12 19l2 2 4-4" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Buy Code
+    </button>
+
+    <!-- TOP UP: Card + plus in perfect balance -->
+    <button class="action-btn" onclick="window.location.href='topup.html'">
+      <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <rect x="4" y="8" width="16" height="8" rx="2" ry="2" fill="#005BAA"/>
+        <path d="M12 12v-4m0 4h4m-4 0h-4" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 16v4m0-4h4m-4 0h-4" stroke="#005BAA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Top Up
+    </button>
+  </div>
+
+  <!-- Top Up Button (secondary) -->
+  <button class="top-up-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="white" style="margin-right: 0.5rem;">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+    </svg>
+    Top Up
+  </button>
+
+  <!-- Recent Transactions -->
+  <div class="section-title">Recent Transactions</div>
+  <div class="transactions">
+    <p style="color: var(--text-gray); padding: 0.5rem;">No recent transactions</p>
+  </div>
+
+  <!-- BOTTOM NAVIGATION — ALL ICONS UPGRADED TO MATCH DESIGN LANGUAGE -->
+  <div class="footer">
+    <!-- HOME: Clean house icon with roof and door -->
+    <a href="dashboard.html" class="nav-item active">
+      <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Home
+    </a>
+
+    <!-- SCAN: Crisp QR code with corner alignment -->
+    <a href="scan.html" class="nav-item">
+      <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <rect x="4" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="blue" stroke-width="1.5"/>
+        <rect x="8" y="7" width="1" height="1" fill="blue"/>
+        <rect x="13" y="7" width="4" height="4" fill="blue"/>
+        <rect x="7" y="13" width="4" height="4" fill="blue"/>
+      </svg>
+      Scan
+    </a>
+
+    <!-- PROFILE: Minimalist human silhouette with clean lines -->
+    <a href="profile.html" class="nav-item">
+      <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="9" r="9"/>
+        <path d="M12 11v7M6 18h12" fill="none" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+      </svg>
+      Profile
+    </a>
+  </div>
+
+  <!-- Float Button -->
+  <div class="float-button" onclick="window.location.href='chat.html'">
+    +
   </div>
 
   <script>
-    let hidden = false;
+    // Load user data and balance
+    const user = localStorage.getItem('bluepay_user');
+    const balance = localStorage.getItem('bluepay_balance') || '50,000.00';
 
-    function go(page) {
-      window.location.href = page;
+    document.getElementById('balance').textContent = balance;
+
+    if (user) {
+      const userData = JSON.parse(user);
+      document.getElementById('userName').textContent = userData.name || userData.email.split('@')[0];
+    } else {
+      window.location.href = 'login.html';
     }
 
-    function toggleBalance() {
-      hidden = !hidden;
-      updateBalance();
+    // Auto-slide promo banners
+    const slider = document.getElementById('promoSlider');
+    const items = document.querySelectorAll('.promo-item');
+    let currentIndex = 0;
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % items.length;
+      slider.style.transform = `translateX(-${currentIndex * 100}%)`;
     }
 
-    function updateBalance() {
-      let balance = parseFloat(localStorage.getItem("balance") || "20000").toFixed(3);
-      document.getElementById("balance").innerHTML = hidden
-        ? '₦****** <span id="eye" onclick="toggleBalance()">🙈</span>'
-        : `₦${balance} <span id="eye" onclick="toggleBalance()">👁</span>`;
+    setInterval(nextSlide, 4000);
+    nextSlide();
+
+    // ————————————————————————————————————————————————
+    // ✅ TRANSACTION HISTORY SYSTEM — INTEGRATED INTO EXISTING "RECENT TRANSACTIONS"
+    // ————————————————————————————————————————————————
+
+    // Initialize transaction history if not exists
+    if (!localStorage.getItem('transactionHistory')) {
+      localStorage.setItem('transactionHistory', JSON.stringify([]));
     }
 
-    function logout() {
-      localStorage.removeItem("currentUser");
-      window.location.href = "login.html";
+    // Initialize notification count if not exists
+    if (!localStorage.getItem('notificationCount')) {
+      localStorage.setItem('notificationCount', '0');
     }
 
-    function loadUser() {
-      let user = JSON.parse(localStorage.getItem("currentUser"));
-      if (user) {
-        document.getElementById("userName").textContent = user.name;
+    // Format date/time like: "Jul 15, 2024 • 14:30 WAT"
+    function formatDateTime() {
+      const now = new Date();
+      const options = { 
+        weekday: 'short', 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      };
+      return new Intl.DateTimeFormat('en-NG', options).format(now).replace(/,\s*$/, '');
+    }
+
+    // Render all transactions into .transactions div
+    function renderTransactions() {
+      const transactions = JSON.parse(localStorage.getItem('transactionHistory'));
+      const transactionsContainer = document.querySelector('.transactions');
+
+      if (!transactions || transactions.length === 0) {
+        transactionsContainer.innerHTML = '<p style="color: var(--text-gray); padding: 0.5rem;">No recent transactions</p>';
+        return;
+      }
+
+      // Show latest 5 transactions (scrollable)
+      const recent = transactions.slice(0, 5);
+      transactionsContainer.innerHTML = recent.map(item => `
+        <div style="
+          padding: 0.7rem;
+          margin-bottom: 0.5rem;
+          background-color: #f8f9ff;
+          border-radius: 12px;
+          border-left: 4px solid #005BAA;
+          font-size: 0.9rem;
+          color: #2d3748;
+        ">
+          <div style="font-weight: 600; color: #005BAA;">₦${item.amount.toLocaleString()}</div>
+          <div style="margin-top: 0.2rem;">To: ${item.accountName}</div>
+          <div style="font-size: 0.8rem; color: #6b7c90; margin-top: 0.3rem;">
+            ${item.bank} • ${item.date}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Add a new transaction to history
+    function addTransaction(amount, accountName, bank, type = 'transfer') {
+      const transaction = {
+        id: Date.now().toString(),
+        amount: parseFloat(amount),
+        accountName: accountName || 'Unknown recipient',
+        bank: bank || 'Unknown bank',
+        date: formatDateTime(),
+        type: type,
+        timestamp: new Date().toISOString()
+      };
+
+      // Get existing transactions
+      const transactions = JSON.parse(localStorage.getItem('transactionHistory') || '[]');
+      
+      // Add new transaction at the beginning
+      transactions.unshift(transaction);
+      
+      // Keep only the last 50 transactions to avoid storage bloat
+      if (transactions.length > 50) {
+        transactions.length = 50;
+      }
+      
+      // Save back to localStorage
+      localStorage.setItem('transactionHistory', JSON.stringify(transactions));
+      
+      // Re-render transactions
+      renderTransactions();
+      
+      // Update balance if needed
+      updateBalanceFromTransaction(amount, type);
+      
+      // Create notification for this transaction
+      createNotification(type, amount, accountName);
+    }
+
+    // Update balance based on transaction type
+    function updateBalanceFromTransaction(amount, type) {
+      const currentBalance = parseFloat(document.getElementById('balance').textContent.replace('₦', '').replace(/,/g, ''));
+      let newBalance;
+      
+      if (type === 'topup' || type === 'receive') {
+        newBalance = currentBalance + amount;
+      } else if (type === 'transfer' || type === 'buy-code') {
+        newBalance = currentBalance - amount;
+      } else {
+        return; // Unknown type, don't change balance
+      }
+      
+      // Update displayed balance
+      document.getElementById('balance').textContent = newBalance.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      
+      // Save updated balance to localStorage
+      localStorage.setItem('bluepay_balance', newBalance.toString());
+    }
+
+    // Create a notification for a transaction
+    function createNotification(type, amount, accountName) {
+      // Get current notification count
+      let notificationCount = parseInt(localStorage.getItem('notificationCount') || '0');
+      
+      // Increment count
+      notificationCount++;
+      
+      // Save updated count
+      localStorage.setItem('notificationCount', notificationCount.toString());
+      
+      // Update badge display
+      updateNotificationBadge(notificationCount);
+      
+      // Create notification message
+      let message = '';
+      switch(type) {
+        case 'transfer':
+          message = `Sent ₦${amount.toLocaleString()} to ${accountName}`;
+          break;
+        case 'receive':
+          message = `Received ₦${amount.toLocaleString()} from ${accountName}`;
+          break;
+        case 'topup':
+          message = `Top up of ₦${amount.toLocaleString()} completed`;
+          break;
+        case 'buy-code':
+          message = `Purchased code for ₦${amount.toLocaleString()}`;
+          break;
+        default:
+          message = `New transaction completed`;
+      }
+      
+      // Store notification in array
+      const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+      notifications.unshift({
+        id: Date.now().toString(),
+        message: message,
+        type: type,
+        timestamp: new Date().toISOString(),
+        read: false
+      });
+      
+      // Keep only the last 20 notifications
+      if (notifications.length > 20) {
+        notifications.length = 20;
+      }
+      
+      localStorage.setItem('notifications', JSON.stringify(notifications));
+    }
+
+    // Update the notification badge display
+    function updateNotificationBadge(count) {
+      const badge = document.getElementById('notificationBadge');
+      if (count > 0) {
+        badge.textContent = count > 99 ? '99+' : count;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
       }
     }
 
-    window.onload = () => {
-      updateBalance();
-      loadUser();
-    };
+    // Clear notifications (when viewing notification page)
+    function clearNotifications() {
+      localStorage.setItem('notificationCount', '0');
+      updateNotificationBadge(0);
+    }
+
+    // Run on page load
+    renderTransactions();
+    
+    // Initialize notification badge
+    const notificationCount = parseInt(localStorage.getItem('notificationCount') || '0');
+    updateNotificationBadge(notificationCount);
+
+    // When navigating to notification page, clear the badge
+    // We'll handle this in notification.html as well
+    document.addEventListener('DOMContentLoaded', function() {
+            // This is just for demo purposes - in real app, transfer/receive pages would call addTransaction()
+      console.log('Transaction system initialized. To test, use: addTransaction(1000, "John Doe", "GTBank", "transfer")');
+      
+      // Check if we're on notification page and clear notifications
+      if (window.location.pathname.includes('notification.html')) {
+        clearNotifications();
+      }
+    });
+
+    // Add functionality to simulate transactions for testing
+    // In a real app, these would be triggered by form submissions or API calls
+    window.addTransaction = addTransaction;
+    
+    // Add event listener for when user navigates back to dashboard from notification page
+    // This ensures badge updates even if user uses browser back button
+    window.addEventListener('pageshow', function() {
+      if (window.location.pathname.includes('dashboard.html') || window.location.pathname === '/') {
+        const notificationCount = parseInt(localStorage.getItem('notificationCount') || '0');
+        updateNotificationBadge(notificationCount);
+      }
+    });
   </script>
 
 </body>

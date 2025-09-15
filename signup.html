@@ -1,83 +1,482 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Signup - Dingle</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - BluePay</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
   <style>
+    :root {
+      --blue: #1a73e8;
+      --blue-dark: #1557b0;
+      --white: #ffffff;
+      --light-border: #dce0e6;
+      --text: #333333;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background: #f0f2f5;
-      font-family: sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--white);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
       padding: 20px;
     }
-    h2 {
-      text-align: center;
-      color: #00b96b;
-    }
-    input, button {
+
+    .container {
+      background-color: var(--white);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(26, 115, 232, 0.12);
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background: #00b96b;
-      color: white;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #00965e;
-    }
-    .link {
+      max-width: 460px;
       text-align: center;
-      margin-top: 15px;
+      border: 1px solid var(--light-border);
+      position: relative;
     }
-    .link a {
-      color: #00b96b;
+
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background-color: var(--blue);
+      border-radius: 20px 20px 0 0;
+    }
+
+    h1 {
+      color: var(--blue);
+      margin: 0 0 10px 0;
+      font-weight: 700;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+
+    .input-group {
+      position: relative;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid var(--light-border);
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background-color: var(--white);
+      font-family: inherit;
+      color: var(--text);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      font-size: 16px;
+      color: #999;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus ~ label,
+    .input-group input:not(:placeholder-shown) ~ label {
+      top: -12px;
+      left: 12px;
+      font-size: 12px;
+      background: var(--white);
+      padding: 0 6px;
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    button {
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 20px 0;
+      width: 100%;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    button:hover {
+      background: var(--blue-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.25);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .google-btn {
+      background: var(--white);
+      color: var(--blue);
+      border: 2px solid var(--light-border);
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .google-btn:hover {
+      background: #f8f9ff;
+      border-color: #c6cddd;
+    }
+
+    .login-link {
+      margin-top: 24px;
+      color: var(--blue);
       text-decoration: none;
-      font-weight: bold;
+      font-size: 15px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .login-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ==== BP LOADER ==== */
+    .bp-loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .bp-loader-container.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .bp-loader {
+      width: 64px;
+      height: 64px;
+      position: relative;
+    }
+
+    .bp-loader span {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid transparent;
+      border-top-color: var(--blue);
+      animation: bpRotate 1.2s linear infinite;
+    }
+
+    .bp-loader span:nth-child(2) {
+      animation-delay: -0.4s;
+      border-top-color: var(--blue);
+      opacity: 0.7;
+    }
+
+    .bp-loader span:nth-child(3) {
+      animation-delay: -0.8s;
+      border-top-color: var(--blue);
+      opacity: 0.4;
+    }
+
+    .bp-loader-text {
+      margin-top: 24px;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 16px;
+      text-align: center;
+      white-space: pre-line;
+      line-height: 1.4;
+    }
+
+    @keyframes bpRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ==== BEAUTIFUL MODAL ==== */
+    .bp-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .bp-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .bp-modal-content {
+      background: var(--white);
+      width: 90%;
+      max-width: 420px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(26, 115, 232, 0.15);
+      overflow: hidden;
+      animation: modalPop 0.3s ease-out;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .bp-modal-header {
+      background: var(--blue);
+      color: var(--white);
+      padding: 18px 20px;
+      font-weight: 600;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .bp-modal-body {
+      padding: 30px 20px;
+      text-align: center;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .bp-modal-button {
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: background 0.3s;
+    }
+
+    .bp-modal-button:hover {
+      background: var(--blue-dark);
     }
   </style>
 </head>
 <body>
 
-  <h2>Create Your Dingle Account</h2>
+  <div class="container">
+    <h1>Sign Up on BluePay</h1>
+    <p class="subtitle">Get started with your free account!</p>
 
-  <input type="text" id="name" placeholder="Full Name">
-  <input type="tel" id="phone" placeholder="Phone Number">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="signup()">Signup</button>
+    <div class="input-group">
+      <input type="text" id="username" placeholder=" " required />
+      <label>Username</label>
+    </div>
 
-  <div class="link">
-    Already have an account? <a href="login.html">Login</a>
+    <div class="input-group">
+      <input type="email" id="email" placeholder=" " required />
+      <label>Email</label>
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder=" " required />
+      <label>Password</label>
+    </div>
+
+    <button id="signupBtn">Sign Up</button>
+
+    <button class="google-btn" id="googleBtn">
+      Continue with Google
+    </button>
+
+    <p><a href="login.html" class="login-link">Already have an account? Log in</a></p>
   </div>
 
+  <!-- BP LOADER -->
+  <div class="bp-loader-container" id="bpLoader">
+    <div class="bp-loader">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="bp-loader-text">Loading...</div>
+  </div>
+
+  <!-- BP MODAL -->
+  <div class="bp-modal" id="bpModal">
+    <div class="bp-modal-content">
+      <div class="bp-modal-header" id="modalHeader">
+        Message
+      </div>
+      <div class="bp-modal-body">
+        <p id="modalMessage">Message body</p>
+        <button class="bp-modal-button" id="modalButton">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔥 FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-auth-compat.js"></script>
+
   <script>
-    function signup() {
-      let phone = document.getElementById("phone").value;
-      let password = document.getElementById("password").value;
-      let name = document.getElementById("name").value;
+    // ======== FIREBASE CONFIG ========
+    const firebaseConfig = {
+      apiKey: "AIzaSyCusJ_rFuOWwy1QFZedtyJr7igCeiIg3a0",
+      authDomain: "my-sign-up-and-login.firebaseapp.com",
+      projectId: "my-sign-up-and-login",
+      storageBucket: "my-sign-up-and-login.firebasestorage.app",
+      messagingSenderId: "1009128333653",
+      appId: "1:1009128333653:web:15c1609ca3fbd4720c0fdc",
+      measurementId: "G-2SS5J1Y13C"
+    };
 
-      if (!phone || !password || !name) {
-        alert("Please fill all fields");
-        return;
-      }
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-      if (localStorage.getItem("accountExists") === "yes") {
-        alert("Only one account allowed on this phone.");
-        return;
-      }
+    // ======== SHOW MODAL FUNCTION ========
+    function showModal(title, message, callback) {
+      const modal = document.getElementById('bpModal');
+      const header = document.getElementById('modalHeader');
+      const msg = document.getElementById('modalMessage');
+      const btn = document.getElementById('modalButton');
 
-      let user = { phone, password, name };
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      localStorage.setItem("accountExists", "yes");
-      localStorage.setItem("balance", "20000");
-      localStorage.setItem("history", "[]");
+      header.textContent = title;
+      msg.textContent = message;
 
-      alert("Account created successfully!");
-      window.location.href = "login.html";
+      btn.onclick = function() {
+        modal.classList.remove('active');
+        if (callback) callback();
+      };
+
+      modal.classList.add('active');
+
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
     }
+
+    // ======== SHOW/HIDE LOADER ========
+    function showLoader(text = "Please wait...") {
+      document.querySelector('.bp-loader-text').textContent = text;
+      document.getElementById('bpLoader').classList.add('active');
+    }
+
+    function hideLoader() {
+      document.getElementById('bpLoader').classList.remove('active');
+    }
+
+    // ======== SIGN UP BUTTON — ALWAYS ENABLED, ALWAYS SAYS “Sign Up” ========
+    document.getElementById('signupBtn').addEventListener('click', function() {
+      // If already signed up on this device
+      if (localStorage.getItem('bluepay_balance')) {
+        showModal(
+          "Notice",
+          "You’ve already signed up on this device. Please log in to continue."
+        );
+        return; // Do not proceed with sign-up
+      }
+
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !email || !password) {
+        showModal("Error", "Please fill in all fields.");
+        return;
+      }
+
+      if (password.length < 6) {
+        showModal("Error", "Password must be at least 6 characters.");
+        return;
+      }
+
+      // ✅ SHOW YOUR CUSTOM LOADER MESSAGE
+      showLoader("We are connecting to BluePay server, please wait...\nLoading....");
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(function(userCredential) {
+          // ✅ Award 50,000.00
+          localStorage.setItem('bluepay_balance', '50,000.00');
+
+          // Wait 1.5s to simulate server connection
+          setTimeout(() => {
+            hideLoader();
+            showModal(
+              "🎉 Success!",
+              "Congratulations! You’ve been awarded 50,000.00 BluePay credits!",
+              () => {
+                window.location.href = "login.html";
+              }
+            );
+          }, 1500);
+        })
+        .catch(function(error) {
+          hideLoader();
+          let msg = "Sign-up failed. Please try again.";
+          if (error.code === "auth/email-already-in-use") {
+            msg = "This email is already registered. Please log in.";
+          } else if (error.code === "auth/invalid-email") {
+            msg = "Invalid email format.";
+          } else if (error.code === "auth/weak-password") {
+            msg = "Password must be at least 6 characters.";
+          }
+          showModal("Error", msg);
+        });
+    });
+
+    // Google Button
+    document.getElementById('googleBtn').addEventListener('click', function() {
+      showModal(
+        "Coming Soon",
+        "Google sign-up is not available yet. Please use email and password."
+      );
+    });
   </script>
 
 </body>

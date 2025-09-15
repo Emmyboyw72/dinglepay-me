@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat - BluePay</title>
+  <style>
+    :root {
+      --blue-primary: #005BAA;
+      --white: #FFFFFF;
+      --text-gray: #333;
+      --light-blue: #e6f0ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--white);
+      color: var(--text-gray);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative; /* Needed for absolute positioning of footer */
+    }
+
+    .header {
+      padding: 1rem;
+      background-color: var(--blue-primary);
+      color: white;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 91, 170, 0.1);
+    }
+
+    .content {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto; /* This makes ONLY the chat scroll */
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      max-height: calc(100vh - 140px); /* Prevents overflow from pushing footer */
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 0.8rem;
+      border-radius: 16px;
+      word-wrap: break-word;
+      line-height: 1.5;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .user-message {
+      align-self: flex-end;
+      background-color: var(--blue-primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .ai-message {
+      align-self: flex-start;
+      background-color: var(--light-blue);
+      color: var(--text-gray);
+      border-bottom-left-radius: 4px;
+    }
+
+    /* FIXED INPUT AREA — STAYS AT BOTTOM AND DOES NOT SCROLL */
+    .input-area {
+      position: sticky; /* Keeps it at bottom when scrolling */
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background-color: var(--white);
+      border-top: 1px solid #e6f0ff;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      z-index: 100; /* Ensures it stays above other elements */
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.05); /* Subtle shadow for depth */
+    }
+
+    .input-field {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .send-btn {
+      padding: 0.8rem 1.2rem;
+      background-color: var(--blue-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+
+    .send-btn:hover {
+      background-color: #004488;
+    }
+
+    .typing-indicator {
+      align-self: flex-start;
+      background-color: var(--light-blue);
+      color: var(--text-gray);
+      padding: 0.8rem;
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      display: none;
+      font-size: 0.9rem;
+    }
+
+    .typing-indicator span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #005BAA;
+      margin-right: 2px;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .header {
+        font-size: 1.1rem;
+        padding: 0.8rem;
+      }
+      
+      .message {
+        max-width: 90%;
+        padding: 0.7rem;
+      }
+      
+      .input-field, .send-btn {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">BluePay Support</div>
+
+  <div class="content" id="chatContent">
+    <div class="message ai-message">Hi there! 👋 I'm your BluePay assistant. How can I help you today?</div>
+    <div class="message ai-message">You can ask me:<br>• How to buy BPC codes<br>• Where to find trusted vendors<br>• How to top up your wallet<br>• Or just say “Hello”!</div>
+  </div>
+
+  <div class="typing-indicator" id="typingIndicator">
+    <span></span><span></span><span></span>
+  </div>
+
+  <div class="input-area">
+    <input type="text" class="input-field" id="inputField" placeholder="Type your message..." autocomplete="off" />
+    <button class="send-btn" id="sendBtn">Send</button>
+  </div>
+
+  <script>
+    const chatContent = document.getElementById('chatContent');
+    const inputField = document.getElementById('inputField');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    // Get user name from localStorage
+    function getUserName() {
+      const user = localStorage.getItem('bluepay_user');
+      if (user) {
+        const userData = JSON.parse(user);
+        return userData.name || userData.email.split('@')[0];
+      }
+      return 'User';
+    }
+
+    // Get account details from localStorage or generate default
+    function getUserAccountDetails() {
+      const user = localStorage.getItem('bluepay_user');
+      if (user) {
+        const userData = JSON.parse(user);
+        return {
+          accountName: userData.accountName || 'BluePay User',
+          bank: userData.bank || 'GTBank',
+          accountNumber: userData.accountNumber || '0123456789'
+        };
+      }
+      return {
+        accountName: 'BluePay User',
+        bank: 'GTBank',
+        accountNumber: '0123456789'
+      };
+    }
+
+    // AI responses based on keywords and context
+    function getAIResponse(userInput) {
+      userInput = userInput.toLowerCase().trim();
+      const userName = getUserName();
+      const account = getUserAccountDetails();
+
+      // Common greetings
+      if (/^(hi|hello|hey|good morning|good afternoon|good evening)/.test(userInput)) {
+        return `Hello ${userName}! 😊 I'm your BluePay assistant. How can I help you today?`;
+      }
+
+      // How are you?
+      if (userInput.includes('how are you') || userInput.includes('how r u') || userInput.includes('how are u')) {
+        return `I'm doing great, thanks for asking! 🌟 I'm here to help you with your BluePay needs. How about you, ${userName}?`;
+      }
+
+      // How is this app?
+      if (userInput.includes('how is this app') || userInput.includes('what do you think of this app') || userInput.includes('app review') || userInput.includes('good app')) {
+        return `Thank you for asking! 😊 This is one of the best apps for secure transactions in Nigeria!<br><br>We're proud to provide fast, reliable service and protect our users from scams.<br><br>We sincerely apologize to anyone who has been affected by scammers using our name. We're actively working with authorities to stop them. Always contact us at bluepay863@gmail.com for official support!`;
+      }
+
+      // Okay / Acknowledgment
+      if (userInput === 'okay' || userInput === 'ok' || userInput === 'alright' || userInput === 'got it' || userInput === 'thanks' || userInput === 'thank you') {
+        return `Yes, ${userName}! When you need help, remember to call me so I can put you through on how to withdraw with your BPC code. You're doing great! 💪`;
+      }
+
+      // BPC Code Requests
+      if (userInput.includes('bpc') || userInput.includes('code') || userInput.includes('pin') || userInput.includes('voucher')) {
+        return `To get a valid BPC code:<br><br>1. Go to the "Buy BPC Code" button on your dashboard<br>2. Use ONLY the account details shown there for payment<br>3. Your account details vary from other users - always use what you see on your screen!<br>4. After payment, tap "I have made payment"<br>5. Your code will be delivered within 10 minutes!<br><br>⚠️ Never use any other account details - they may be fraudulent!`;
+      }
+
+      // Best vendors / Scams
+      if (userInput.includes('best vendor') || userInput.includes('trusted vendor') || userInput.includes('safe vendor') || userInput.includes('scam') || userInput.includes('fraud') || userInput.includes('fake')) {
+        return `There are many scammers pretending to be BluePay! ⚠️<br><br>🛑 We NEVER sell codes via WhatsApp, Telegram, Instagram, or social media.<br><br>✅ Only get your BPC codes from our official channel: <strong>bluepay863@gmail.com</strong><br><br>📌 Important limits:<br>- Your code is valid for only 1 month<br>- You can withdraw maximum of ₦10,000 once per week<br>- All withdrawals require verification<br><br>🎁 PROMO: Users get ₦200 bonus every Monday!<br>⏰ This promo ends January 31, 2024!<br><br>💡 Tip: The cheapest BPC codes are available through our official app - no middlemen!`;
+      }
+
+      // Top-up / Wallet
+      if (userInput.includes('top up') || userInput.includes('add money') || userInput.includes('wallet') || userInput.includes('balance') || userInput.includes('recharge')) {
+        return `To top up your BluePay wallet:<br><br>1. Open the BluePay app<br>2. Tap ‘Top Up’<br>3. Choose your payment method (Bank, Card, or Airtime)<br>4. Confirm and wait for instant credit.<br><br>Need help? Email us at <strong>bluepay863@gmail.com</strong>!`;
+      }
+
+      // Withdrawal / BPC withdrawal
+      if (userInput.includes('withdraw') || userInput.includes('cash out') || userInput.includes('get money') || userInput.includes('transfer out')) {
+        return `To withdraw funds using your BPC code:<br><br>1. Buy a BPC code through our official system<br>2. Once received, go to 'Withdraw' section<br>3. Enter your BPC code<br>4. Select your preferred withdrawal method<br>5. Confirm and wait 2-5 minutes<br><br>⚠️ Maximum withdrawal: ₦10,000 per week<br>⏱️ Valid for 1 month after purchase<br><br>Remember: Always use your unique account details shown on your screen when making payments!`;
+      }
+
+      // App Usage / Guide
+      if (userInput.includes('how to') || userInput.includes('use') || userInput.includes('guide') || userInput.includes('tutorial') || userInput.includes('steps')) {
+        return `Here’s how to use BluePay:<br><br>1. 📲 Download the app from our official website<br>2. 📧 Sign up with your email<br>3. 💰 Get your first ₦50,000 bonus after sign-up<br>4. 🛒 Buy BPC codes by using the "Buy BPC Code" button and following the instructions<br>5. 💬 Use this chat anytime for help!<br>6. 🔄 Check for weekly ₦200 promos every Monday!<br><br>You’re all set!`;
+      }
+
+      // Contact / Email
+      if (userInput.includes('email') || userInput.includes('contact') || userInput.includes('support') || userInput.includes('help') || userInput.includes('bluepay863')) {
+        return `Our official support email is: <strong>bluepay863@gmail.com</strong><br><br>Use it to:<br>- Request BPC codes<br>- Report issues<br>- Ask about promotions<br>- Verify account details<br><br>We respond within 1 hour during business hours (8 AM – 8 PM WAT).<br><br>⚠️ Never trust anyone claiming to be BluePay support outside this email!`;
+      }
+
+      // Account details questions
+      if (userInput.includes('account') || userInput.includes('details') || userInput.includes('bank') || userInput.includes('number')) {
+        return `Your personal account details for payments are:<br><br>🏦 Bank: ${account.bank}<br>👤 Account Name: ${account.accountName}<br>🔢 Account Number: ${account.accountNumber}<br><br>❗ These details are unique to you and different from other users!<br><br>Always use these exact details when making payments. If they don't match what you see on your screen, DO NOT proceed!`;
+      }
+
+      // Promo questions
+      if (userInput.includes('promo') || userInput.includes('bonus') || userInput.includes('offer') || userInput.includes('discount')) {
+        return `🎉 Special Promotions:<br><br>• Every Monday, you receive ₦200 free bonus!<br>• Cheaper BPC codes available through official app<br>• New users get ₦50,000 welcome bonus<br><br>⏰ All current promos end on January 31, 2024!<br><br>Don't miss out! Check your dashboard every Monday for your bonus!`;
+      }
+
+      // Default fallback
+      return `I'm here to help you with BluePay! 😊<br><br>Try asking:<br>- 'How do I get a BPC code?'<br>- 'Where can I buy safely?'<br>- 'How do I top up?'<br>- 'What's my account number?'<br>- 'Are there any promos?'<br><br>Or email us directly at <strong>bluepay863@gmail.com</strong> for immediate support!`;
+    }
+
+    // Add message to chat
+    function addMessage(text, className) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${className}`;
+      messageDiv.innerHTML = text;
+      chatContent.appendChild(messageDiv);
+      chatContent.scrollTop = chatContent.scrollHeight; // Auto-scroll to bottom
+    }
+
+    // Send message
+    function sendMessage() {
+      const text = inputField.value.trim();
+      if (!text) return;
+
+      // User message
+      addMessage(text, 'user-message');
+      inputField.value = '';
+
+      // Show typing indicator
+      typingIndicator.style.display = 'block';
+
+      // Simulate AI response delay
+      setTimeout(() => {
+        typingIndicator.style.display = 'none';
+        const response = getAIResponse(text);
+        addMessage(response, 'ai-message');
+      }, 1200);
+    }
+
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+
+    inputField.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // Focus input on load
+    inputField.focus();
+
+    // Ensure input stays focused when returning to page
+    window.addEventListener('pageshow', function() {
+      inputField.focus();
+    });
+  </script>
+
+</body>
+</html>

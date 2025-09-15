@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan - BluePay</title>
+  <style>
+    :root {
+      --blue-primary: #005BAA;
+      --blue-light: #0071CC;
+      --white: white;
+      --text-gray: #333;
+      --border-gray: #e0e0e0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--white);
+      color: var(--text-gray);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: #f8f9ff;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 91, 170, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background gradient shape */
+    .bg-shape {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(135deg, #e6f2ff, #ffffff);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      z-index: 0;
+    }
+
+    .profile-pic {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ddd;
+      background-color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: #999;
+      font-size: 24px;
+      z-index: 1;
+    }
+
+    .user-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--blue-primary);
+      margin-bottom: 8px;
+      z-index: 1;
+    }
+
+    .contact-info {
+      font-size: 0.9rem;
+      color: #6b7c90;
+      margin-bottom: 20px;
+      z-index: 1;
+    }
+
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+      z-index: 1;
+    }
+
+    .qr-code {
+      width: 140px;
+      height: 140px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qr-code img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .qr-label {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #6b7c90;
+      z-index: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      .container {
+        padding: 20px;
+      }
+      .qr-code {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scan Page -->
+  <div class="container">
+    <div class="bg-shape"></div>
+
+    <!-- Profile Icon -->
+    <div class="profile-pic">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="#999">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.33 0-4 1.67-4 4v2h8v-2c0-2.33-1.67-4-4-4z"/>
+      </svg>
+    </div>
+
+    <!-- User Name -->
+    <div class="user-name">BluePay</div>
+
+    <!-- Contact Info -->
+    <div class="contact-info">
+      Your unique payment identifier
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="qr-container">
+      <div class="qr-code">
+        <!-- Fake QR Code with "BluePay" text overlay -->
+        <img src="https://via.placeholder.com/140x140?text=BluePay+QR" alt="BluePay QR Code" style="background-color: white; border: none;">
+        <!-- Overlay text for visual effect -->
+        <div style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #005BAA;
+          font-weight: bold;
+          font-size: 14px;
+          pointer-events: none;
+          opacity: 0.8;
+        ">
+          BLUEPAY
+        </div>
+      </div>
+      <div class="qr-label">Scan QR code to add contact</div>
+    </div>
+  </div>
+
+  <script>
+    // Optional: Add dynamic QR generation if needed
+    document.addEventListener('DOMContentLoaded', function() {
+      const qrCode = document.querySelector('.qr-code img');
+      qrCode.src = "https://via.placeholder.com/140x140?text=BluePay+QR";
+    });
+  </script>
+
+</body>
+</html>

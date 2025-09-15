@@ -1,78 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Welcome to Dingle</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BluePay - Welcome</title>
   <style>
-    body {
+    :root {
+      --blue-primary: #005BAA;
+      --blue-light: #0077D9;
+      --blue-muted: #E6F0FF;
+      --white: #FFFFFF;
+      --text-gray: #4A5A70;
+    }
+
+    * {
       margin: 0;
-      background: #00b96b;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      height: 100vh;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--white);
       display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--text-gray);
     }
 
     .logo {
-      font-size: 50px;
-      font-weight: bold;
-      animation: bounceZoom 2s ease-in-out;
-      transform-style: preserve-3d;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      letter-spacing: -1px;
+      margin-bottom: 1.5rem;
+      font-family: 'Arial Black', sans-serif;
     }
 
-    @keyframes bounceZoom {
-      0% {
-        transform: scale(0.3) rotateY(0deg);
-        opacity: 0;
-      }
-      50% {
-        transform: scale(1.1) rotateY(180deg);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1) rotateY(360deg);
-      }
+    .loader {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--blue-muted);
+      border-top: 4px solid var(--blue-primary);
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+      margin-bottom: 2rem;
     }
 
-    .subtext {
-      margin-top: 10px;
-      font-size: 18px;
-      animation: fadeIn 3s ease;
+    .status {
+      font-size: 1rem;
+      color: var(--text-gray);
+      margin-top: 1rem;
     }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    .enter-btn {
-      margin-top: 40px;
-      padding: 12px 30px;
-      font-size: 16px;
-      background: white;
-      color: #00b96b;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
+    .footer-text {
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: var(--text-gray);
+      text-align: center;
     }
 
-    .enter-btn:hover {
-      transform: scale(1.05);
+    .footer-text span {
+      color: var(--blue-primary);
+      font-weight: 500;
     }
   </style>
 </head>
 <body>
 
-  <div class="logo">DINGLE</div>
-  <div class="subtext">Welcome to Dingle Cooperative</div>
-  <button class="enter-btn" onclick="location.href='signup.html'">Get Started</button>
+  <div class="logo">BluePay</div>
+  <div class="loader"></div>
+  <p class="status">Connecting to BluePay Secure Server...</p>
+
+  <p class="footer-text">
+    Connecting to <span>BluePay Secure Payment Server</span> • PCI-DSS Compliant
+  </p>
+
+  <script>
+    setTimeout(() => {
+      const isLoggedIn = localStorage.getItem('bluepay_logged_in') === 'true';
+      window.location.href = isLoggedIn ? 'login.html' : 'signup.html';
+    }, 2000);
+  </script>
 
 </body>
 </html>

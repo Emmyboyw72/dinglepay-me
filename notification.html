@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>Notifications & History - BluePay</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(135deg, #e6f0ff, #ffffff);
+      color: #333;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      text-align: center;
+    }
+
+    /* ———— BACKGROUND WATERMARK ———— */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 12rem;
+      font-weight: 800;
+      font-family: 'Arial Black', sans-serif;
+      color: rgba(0, 91, 170, 0.04);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      letter-spacing: -0.2em;
+    }
+
+    /* ———— HEADER BAR ———— */
+    .header-bar {
+      width: 100%;
+      background-color: #005BAA;
+      color: white;
+      text-align: center;
+      padding: 0.8rem 1rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      font-family: 'Arial Black', sans-serif;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0, 91, 170, 0.2);
+      z-index: 20;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 8px;
+      right: 15px;
+      background: linear-gradient(135deg, #ff4757, #ff6b81);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(255, 71, 87, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* ———— MAIN CONTENT CONTAINER ———— */
+    .content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 420px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 16px 48px rgba(0, 91, 170, 0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(220, 230, 255, 0.5);
+      padding: 2rem;
+      min-height: 400px;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: #005BAA;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'Arial Black', sans-serif;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 6px 20px rgba(0, 91, 170, 0.15);
+    }
+
+    .logo::after {
+      content: "BP";
+      font-size: 0.7em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #005BAA;
+      margin-bottom: 0.5rem;
+      font-family: 'Arial Black', sans-serif;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #005BAA;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    /* ———— NOTIFICATION LIST ———— */
+    #notificationList {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 2rem;
+      padding-right: 0.5rem;
+    }
+
+    .notification-item {
+      background: linear-gradient(135deg, #f0f7ff, #e0f0ff);
+      border-left: 4px solid #005BAA;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      border: 1px solid #d0e0ff;
+      position: relative;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 25px rgba(0, 91, 170, 0.08);
+      animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: #4A5A70;
+    }
+
+    .notification-date {
+      font-weight: 600;
+      color: #005BAA;
+    }
+
+    .notification-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background-color: #e6f0ff;
+      color: #005BAA;
+      border: 1px solid #d0e0ff;
+    }
+
+    .notification-unread {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 10px;
+      height: 10px;
+      background-color: #ff4757;
+      border-radius: 50%;
+      display: none;
+      animation: blink 1.5s infinite;
+    }
+
+    .notification-item.unread .notification-unread {
+      display: block;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .notification-details p {
+      margin: 0.4rem 0;
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .notification-details p strong {
+      color: #005BAA;
+      font-weight: 700;
+    }
+
+    .notification-details p:nth-child(1) {
+      font-size: 1.2rem;
+      color: #005BAA;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0, 91, 170, 0.1);
+    }
+
+    /* ———— MESSAGE BACKGROUND STYLES ———— */
+    .message-bg-welcome {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .message-bg-warning {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      color: #5d4037;
+    }
+
+    .message-bg-promo {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      color: #4a3a3a;
+    }
+
+    .message-bg-assurance {
+      background: linear-gradient(135deg, #c3e0e6 0%, #e3e9f0 100%);
+      color: #1a3a4d;
+    }
+
+    .message-bg-refund {
+      background: linear-gradient(135deg, #c7ecee 0%, #f0f9ff 100%);
+      color: #1a4a5d;
+    }
+
+    /* ———— OPT-OUT BUTTON ———— */
+    .opt-out-container {
+      text-align: center;
+      margin-top: 1rem;
+      padding: 1.5rem;
+      background-color: #f8f9ff;
+      border-radius: 15px;
+      border: 1px dashed #005BAA;
+      box-shadow: 0 4px 15px rgba(0, 91, 170, 0.05);
+    }
+
+    .opt-out-btn {
+      background: linear-gradient(135deg, #ff4757, #ff6b81);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+      box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+    }
+
+    .opt-out-btn:hover {
+      background: linear-gradient(135deg, #e03a4b, #d65a70);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 71, 87, 0.4);
+    }
+
+    .opt-out-info {
+      font-size: 0.8rem;
+      color: #6B7C90;
+      margin-top: 0.5rem;
+    }
+
+    /* ———— NO NOTIFICATIONS STATE ———— */
+    .no-notifications {
+      text-align: center;
+      color: #9CA8B8;
+      font-style: italic;
+      padding: 2.5rem 1rem;
+      font-size: 1rem;
+      background-color: #f0f5ff;
+      border-radius: 15px;
+      border: 1px dashed #d0e0ff;
+    }
+
+    /* ———— LOADING ANIMATION ———— */
+    .loading-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem 0;
+      color: #005BAA;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .loading-dots span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #005BAA;
+      margin: 0 4px;
+      animation: loadingDots 1.5s infinite ease-in-out;
+    }
+
+    .loading-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes loadingDots {
+      0%, 100% { transform: scale(0.5); opacity: 0.5; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ———— FOOTER ———— */
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: #9CA8B8;
+      text-align: center;
+    }
+
+    /* ———— RESPONSIVE ADJUSTMENTS ———— */
+    @media (max-width: 480px) {
+      .content {
+        padding: 1.8rem 1.5rem;
+      }
+      
+      .logo {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+      }
+      
+      .title {
+        font-size: 1.6rem;
+      }
+      
+      .subtitle {
+        font-size: 0.95rem;
+      }
+      
+      .notification-item {
+        padding: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+      
+      .notification-details p {
+        font-size: 0.9rem;
+      }
+      
+      .notification-details p:nth-child(1) {
+        font-size: 1.1rem;
+      }
+      
+      .header-bar {
+        padding: 0.7rem 1rem;
+        font-size: 1.2rem;
+      }
+      
+      .notification-badge {
+        top: 6px;
+        right: 12px;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+      }
+      
+      .opt-out-container {
+        padding: 1.2rem;
+      }
+      
+      .opt-out-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Watermark -->
+  <div class="watermark">BP</div>
+
+  <!-- Header Bar with Notification Badge -->
+  <div class="header-bar">BLUE PAY NOTIFICATIONS
+    <span class="notification-badge" id="notificationBadge">0</span>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="logo"></div>
+    <h1 class="title">Your Notifications</h1>
+    <p class="subtitle">Messages from BluePay will appear here</p>
+
+    <!-- Notification List -->
+    <div id="notificationList">
+      <!-- Items will be rendered here -->
+    </div>
+
+    <!-- Loading Indicator (initially hidden) -->
+    <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+      <div class="loading-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Opt-Out Section -->
+    <div class="opt-out-container">
+      <button class="opt-out-btn" id="optOutBtn">Opt Out of Notifications</button>
+      <p class="opt-out-info">You can re-enable notifications anytime from your Dashboard</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      © 2024 BluePay • All rights reserved
+    </div>
+  </div>
+
+  <script>
+    // Initialize notification system if not exists
+    function initializeNotificationSystem() {
+      // Check if notification settings exist, if not create default
+      if (!localStorage.getItem('notificationSettings')) {
+        localStorage.setItem('notificationSettings', JSON.stringify({
+          enabled: true,
+          lastSeen: null,
+          readCount: 0,
+          messagesSent: []
+        }));
+      }
+      
+      // Initialize notifications array if not exists
+      if (!localStorage.getItem('notificationHistory')) {
+        localStorage.setItem('notificationHistory', JSON.stringify([]));
+      }
+      
+      // Get username from dashboard
+      const username = localStorage.getItem('dashboard_username') || 'User';
+      
+      // Check if this is the user's first visit and add welcome notification
+      const notificationSettings = JSON.parse(localStorage.getItem('notificationSettings'));
+      
+      // If no welcome message sent yet, send it
+      if (!notificationSettings.welcomeShown && username !== 'User') {
+        const welcomeNotification = {
+          id: Date.now().toString(),
+          type: 'welcome',
+          title: `Welcome to BluePay!`,
+          message: `Hello ${username}! Thank you for choosing BluePay. Your secure payments are now just a tap away.`,
+          date: new Date().toLocaleString('en-NG', { 
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          unread: true,
+          bgColorClass: 'message-bg-welcome'
+        };
+        
+        let notifications = JSON.parse(localStorage.getItem('notificationHistory'));
+        notifications.unshift(welcomeNotification);
+        localStorage.setItem('notificationHistory', JSON.stringify(notifications));
+        
+        // Mark welcome as shown
+        notificationSettings.welcomeShown = true;
+        notificationSettings.messagesSent.push('welcome');
+        localStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+        
+        // Update badge count
+        updateBadgeCount();
+      }
+      
+      // Schedule automatic messages after 30 minutes each
+      scheduleAutomaticMessages(username, notificationSettings);
+    }
+
+    // Schedule automatic messages at 30-minute intervals
+    function scheduleAutomaticMessages(username, notificationSettings) {
+      const messages = [
+        {
+          id: 'warning',
+          title: "We Apologize",
+          message: `Hey ${username}, we apologize for being scammed with our company name. We are deeply sorry.`,
+          bgColorClass: 'message-bg-warning'
+        },
+        {
+          id: 'promo',
+          title: "Exclusive Opportunity",
+          message: `Hey ${username}, do you know you can get your BPC code now directly from our company or vendor without a middle man?`,
+          bgColorClass: 'message-bg-promo'
+        },
+        {
+          id: 'assurance',
+          title: "Join Thousands!",
+          message: `Hey ${username}, join 10,000 users now to get a chance of winning lots of money!`,
+          bgColorClass: 'message-bg-assurance'
+        },
+        {
+          id: 'refund',
+          title: "Secure Withdrawal",
+          message: `Hey ${username}, we assure you a successful withdrawal as long as you have your valid BPC CODE.`,
+          bgColorClass: 'message-bg-refund'
+        },
+        {
+          id: 'final',
+          title: "Money Back Guarantee",
+          message: `Hey ${username}, if your transaction is not confirmed in the next 24 hours of making payments, you will be refunded.`,
+          bgColorClass: 'message-bg-refund'
+        }
+      ];
+      
+      // Check which messages have been sent
+      const sentMessages = notificationSettings.messagesSent || [];
+      const currentTime = Date.now();
+      
+      // Send any pending messages based on time since last message
+      messages.forEach((msg, index) => {
+        if (!sentMessages.includes(msg.id)) {
+          // Calculate when this message should be sent (30 minutes after previous)
+          const delayMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
+          
+          // For first message, wait 30 minutes from now
+          // For subsequent messages, wait 30 minutes from previous message
+          const expectedTime = sentMessages.length > 0 ? 
+            new Date(currentTime - (sentMessages.length * delayMinutes)).getTime() : 
+            currentTime + delayMinutes;
+          
+          // If it's time to send this message
+          if (currentTime >= expectedTime) {
+            setTimeout(() => {
+              sendAutomaticMessage(msg, username);
+            }, 1000); // Small delay to ensure UI is ready
+          }
+        }
+      });
+    }
+
+    // Send an automatic message
+    function sendAutomaticMessage(message, username) {
+      const notificationSettings = JSON.parse(localStorage.getItem('notificationSettings'));
+      const notifications = JSON.parse(localStorage.getItem('notificationHistory') || '[]');
+      
+      const newNotification = {
+        id: Date.now().toString(),
+        type: 'auto',
+        title: message.title,
+        message: message.message,
+        date: new Date().toLocaleString('en-NG', { 
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        unread: true,
+        bgColorClass: message.bgColorClass
+      };
+      
+      notifications.unshift(newNotification);
+      localStorage.setItem('notificationHistory', JSON.stringify(notifications));
+      
+      // Track that this message has been sent
+      notificationSettings.messagesSent.push(message.id);
+      localStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+      
+      // Update badge count
+      updateBadgeCount();
+      
+      // Re-render notifications
+      renderNotifications();
+    }
+
+    // Count unread notifications
+    function countUnreadNotifications() {
+      const notifications = JSON.parse(localStorage.getItem('notificationHistory') || '[]');
+      return notifications.filter(n => n.unread).length;
+    }
+
+    // Update badge count
+    function updateBadgeCount() {
+      const unreadCount = countUnreadNotifications();
+      const notificationBadge = document.getElementById('notificationBadge');
+      notificationBadge.textContent = unreadCount > 0 ? unreadCount : '';
+      notificationBadge.style.display = unreadCount > 0 ? 'flex' : 'none';
+    }
+
+    // Render notification history
+    function renderNotifications() {
+      const notifications = JSON.parse(localStorage.getItem('notificationHistory') || '[]');
+      const notificationList = document.getElementById('notificationList');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      
+      // Show loading indicator while processing
+      loadingIndicator.style.display = 'flex';
+      
+      setTimeout(() => {
+        // Check if notifications are disabled
+        const notificationSettings = JSON.parse(localStorage.getItem('notificationSettings'));
+        if (notificationSettings && !notificationSettings.enabled) {
+          notificationList.innerHTML = `
+            <p class="no-notifications">Notifications are currently disabled. You can enable them in your dashboard.</p>
+          `;
+          loadingIndicator.style.display = 'none';
+          return;
+        }
+        
+        // If no notifications
+        if (!notifications || notifications.length === 0) {
+          notificationList.innerHTML = '<p class="no-notifications">No notifications yet</p>';
+          loadingIndicator.style.display = 'none';
+          return;
+        }
+        
+        // Render notifications
+        notificationList.innerHTML = notifications.map(item => `
+          <div class="notification-item ${item.unread ? 'unread' : ''}" style="background: ${item.bgColorClass ? 'linear-gradient(135deg, #f0f7ff, #e0f0ff)' : 'none'}">
+            <span class="notification-unread"></span>
+            <div class="notification-header">
+              <span class="notification-date">${item.date}</span>
+              <span class="notification-status">${item.type === 'welcome' ? 'Welcome' : 'Auto Message'}</span>
+            </div>
+            <div class="notification-details">
+              <p>${item.title}</p>
+              <p>${item.message}</p>
+              <p style="font-size: 0.85rem; color: #005BAA; font-weight: 600;">${item.id}</p>
+            </div>
+          </div>
+        `).join('');
+        
+        // Mark all notifications as read after viewing
+        if (notifications.some(n => n.unread)) {
+          notifications.forEach(n => n.unread = false);
+          localStorage.setItem('notificationHistory', JSON.stringify(notifications));
+          
+          // Update badge after marking as read
+          updateBadgeCount();
+        }
+        
+        loadingIndicator.style.display = 'none';
+      }, 500);
+    }
+
+    // Handle opt-out functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeNotificationSystem();
+      renderNotifications();
+      
+      // Opt-out button event
+      document.getElementById('optOutBtn').addEventListener('click', function() {
+        const notificationSettings = JSON.parse(localStorage.getItem('notificati

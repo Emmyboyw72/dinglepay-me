@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>Receive BPC Code - BluePay</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(135deg, #e6f0ff, #ffffff);
+      color: #4A5A70;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      text-align: center;
+    }
+
+    /* ———— BACKGROUND WATERMARK ———— */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 12rem;
+      font-weight: 800;
+      font-family: 'Arial Black', sans-serif;
+      color: rgba(0, 91, 170, 0.04);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      letter-spacing: -0.2em;
+    }
+
+    /* ———— CONTENT CONTAINER ———— */
+    .content {
+      position: relative;
+      z-index: 10;
+      max-width: 400px;
+      padding: 3rem;
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 16px 48px rgba(0, 91, 170, 0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(220, 230, 255, 0.5);
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #005BAA, #0077D9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'Arial Black', sans-serif;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 6px 20px rgba(0, 91, 170, 0.15);
+    }
+
+    .logo::after {
+      content: "BP";
+      font-size: 0.7em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #005BAA;
+      margin-bottom: 1rem;
+      font-family: 'Arial Black', sans-serif;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #4A5A70;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .info {
+      font-size: 0.9rem;
+      color: #6B7C90;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed #E0E8FF;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: blue;
+      text-align: center;
+    }
+
+    /* ———— RESPONSIVE ADJUSTMENTS ———— */
+    @media (max-width: 480px) {
+      .content {
+        padding: 2rem 1.5rem;
+      }
+      
+      .logo {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+      }
+      
+      .title {
+        font-size: 1.6rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Watermark -->
+  <div class="watermark">BP</div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="logo"></div>
+    <h1 class="title">Receive BPC Code</h1>
+    <p class="subtitle">
+      This feature is currently under development.  
+      We’re working hard to bring you secure, instant code delivery directly here.
+    </p>
+    
+    <p class="info">
+      You’ll be notified by email as soon as this feature becomes available.<br>
+      In the meantime, please use the <strong>buy code</strong> option to obtain your BPC code.
+    </p>
+    
+    <div class="footer">
+      © 2024 BluePay • All rights reserved
+    </div>
+  </div>
+
+</body>
+</html>

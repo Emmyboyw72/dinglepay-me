@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BluePay Transfer - Naira</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, blue, #ffffff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 102, 204, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 35px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: blue;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8f9ff;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: blue;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+            background-color: white;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #005;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Modal Overlay for Messages */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: gradient 350% blue red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .message-modal {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            max-width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 102, 204, 0.2);
+            animation: modalSlideIn 0.5s ease-out;
+            position: relative;
+            border: 1px solid blue;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+            font-size: 18px;
+            color: #0066cc;
+            font-weight: 600;
+            letter-spacing: 5px;
+        }
+
+        .loader span {
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .message-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .success .message-icon {
+            color: #0066cc;
+        }
+
+        .error .message-icon {
+            color: #dc3545;
+        }
+
+        .contact-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #e6f2ff;
+            color: #0066cc;
+            border: 1px dashed #0066cc;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background-color: #cce5ff;
+        }
+
+        .dashboard-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 15px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .dashboard-link:hover {
+            text-decoration: underline;
+        }
+
+        /* BPC Code Input Styling */
+        .bpc-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .bpc-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8f9ff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .bpc-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+            background-color: white;
+        }
+
+        .bpc-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .bpc-label::after {
+            content: "🔒";
+            margin-left: 5px;
+            color: #0066cc;
+            font-size: 14px;
+        }
+
+        /* BPC Warning Modal Style */
+        .bpc-warning-modal {
+            background-color: blue;
+            border: 2px solid white;
+            animation: bpcWarningShake 0.5s ease-in-out;
+        }
+
+        @keyframes bpcWarningShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .bpc-warning-icon {
+            color: red;
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: bpcWarningPulse 2s infinite;
+        }
+
+        @keyframes bpcWarningPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .bpc-warning-text {
+            color: red;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .bpc-warning-loader {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+            font-size: 20px;
+            color: red;
+            font-weight: 600;
+            letter-spacing: 8px;
+        }
+
+        .bpc-warning-loader span {
+            animation: bpcWarningBlink 1.5s infinite;
+        }
+
+        @keyframes bpcWarningBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .message-modal {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Transfer Page -->
+    <div class="container" id="transferPage">
+        <div class="header">
+            <h1>Transfer Funds</h1>
+            <p>Send money securely in Naira</p>
+        </div>
+
+        <form id="transferForm">
+            <div class="form-group">
+                <label for="bank">Select Bank</label>
+                <select id="bank" required>
+                    <option value="">-- Select Bank --</option>
+                    <option value="gtb">Guaranty Trust Bank</option>
+                    <option value="zenith">Zenith Bank</option>
+                    <option value="access">Access Bank</option>
+                    <option value="fcmb">FCMB</option>
+                    <option value="polaris">Polaris Bank</option>
+                    <option value="opay">opay PLC</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="recipientName">Recipient Name</label>
+                <input type="text" id="recipientName" placeholder="Enter full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount (₦)</label>
+                <input type="number" id="amount" min="1000" step="1" placeholder="Minimum ₦1,000" required>
+            </div>
+
+            <div class="form-group">
+                <label for="accountNumber">Account Number</label>
+                <input type="text" id="accountNumber" placeholder="Enter account number" required>
+            </div>
+
+            <!-- BPC Code Input Field -->
+            <div class="bpc-container">
+                <label for="bpcCode" class="bpc-label">BPC Security Code</label>
+                <input type="text" id="bpcCode" class="bpc-input" placeholder="Enter BPC code" maxlength="8" required>
+            </div>
+
+            <button type="submit" class="btn">Continue Transfer</button>
+        </form>
+
+        <a href="dashboard.html" class="dashboard-link">← Back to Dashboard</a>
+    </div>
+
+    <!-- Success/Error Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="message-modal" id="modalContent">
+            <div class="loader" id="loader">
+                <span>BP</span> <span>BP</span> <span>BP</span>
+            </div>
+            <div class="message-icon" id="modalIcon">✓</div>
+            <div id="modalText">Processing...</div>
+            <a href="mailto:bluepay863@gmail.com" class="contact-btn" id="modalContactBtn" style="display: none;">📞 Contact Customer Service</a>
+        </div>
+    </div>
+
+    <!-- BPC Warning Modal -->
+    <div class="modal-overlay" id="bpcWarningModal" style="display: none;">
+        <div class="message-modal bpc-warning-modal" id="bpcWarningContent">
+            <div class="bpc-warning-icon">⚠️</div>
+            <div class="bpc-warning-text">Invalid BPC Code Detected</div>
+            <div class="bpc-warning-loader">
+                <span>BP</span> <span>BP</span> <span>BP</span>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">Your security code is incorrect. Please contact support for assistance.</p>
+            <a href="mailto:bluepay863@gmail.com" class="contact-btn">📞 Contact Customer Service</a>
+        </div>
+    </div>
+
+    <script>
+        // ========================
+        // ✅ REUSE DASHBOARD'S TRANSACTION SYSTEM
+        // ========================
+
+        // Format date/time like: "Jul 15, 2024 • 14:30 WAT"
+        function formatDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            };
+            return new Intl.DateTimeFormat('en-NG', options).format(now).replace(/,\s*$/, '');
+        }
+
+        // Add a new transaction to history (same as dashboard)
+        function addTransaction(amount, accountName, bank, type = 'transfer') {
+            const transaction = {
+                id: Date.now().toString(),
+                amount: parseFloat(amount),
+                accountName: accountName || 'Unknown recipient',
+                bank: bank || 'Unknown bank',
+                date: formatDateTime(),
+                type: type,
+                timestamp: new Date().toISOString()
+            };
+
+            let transactions = JSON.parse(localStorage.getItem('transactionHistory') || '[]');
+            transactions.unshift(transaction);
+            if (transactions.length > 50) transactions.length = 50;
+            localStorage.setItem('transactionHistory', JSON.stringify(transactions));
+            
+            // Update balance in localStorage (this is what matters!)
+            updateBalanceFromTransaction(amount, type);
+        }
+
+        // Update balance based on transaction type — now works even without UI
+        function updateBalanceFromTransaction(amount, type) {
+            // Initialize balance if it doesn't exist
+            let currentBalance = localStorage.getItem('bluepay_balance');
+            if (currentBalance === null) {
+                currentBalance = 0; // Default starting balance
+            } else {
+                currentBalance = parseFloat(currentBalance);
+            }
+
+            let newBalance;
+
+            if (type === 'topup' || type === 'receive') {
+                newBalance = currentBalance + amount;
+            } else if (type === 'transfer' || type === 'buy-code') {
+                newBalance = currentBalance - amount;
+            } else {
+                return;
+            }
+
+            // ✅ ALWAYS UPDATE LOCALSTORAGE — THIS IS THE KEY FIX
+            localStorage.setItem('bluepay_balance', newBalance.toString());
+
+            // Optional: Update UI if #balance exists (on dashboard page)
+            const currentBalanceEl = document.getElementById('balance');
+            if (currentBalanceEl) {
+                currentBalanceEl.textContent = newBalance.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+        }
+
+        // ========================
+        // TRANSFER PAGE LOGIC WITH BPC VALIDATION
+        // ========================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const transferForm = document.getElementById('transferForm');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const loader = document.getElementById('loader');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalText = document.getElementById('modalText');
+            const modalContactBtn = document.getElementById('modalContactBtn');
+            const bpcWarningModal = document.getElementById('bpcWarningModal');
+            const bpcWarningLoader = document.querySelector('.bpc-warning-loader');
+            const bpcWarningContent = document.getElementById('bpcWarningContent');
+
+            // ✅ HIDDEN BPC CODE — NEVER SHOWN TO USER
+            const VALID_BPC_CODE = "EMMYBOY";
+
+            transferForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const bank = document.getElementById('bank').value;
+                const recipientName = document.getElementById('recipientName').value.trim();
+                const amount = parseFloat(document.getElementById('amount').value);
+                const accountNumber = document.getElementById('accountNumber').value.trim();
+                const bpcCode = document.getElementById('bpcCode').value.trim().toUpperCase();
+
+                if (amount < 1000) {
+                    showModal("Error", "Minimum withdrawal is ₦1,000", "error");
+                    return;
+                }
+
+                if (!bank || !recipientName || !accountNumber || !bpcCode) {
+                    showModal("Error", "Please fill all fields correctly", "error");
+                    return;
+                }
+
+                // Show processing modal
+                showModal("Processing", "Verifying details...", "loading");
+
+                setTimeout(() => {
+                    // Simulate random failure rate (80% success)
+                    const isSuccess = Math.random() > 0.2;
+
+                    if (isSuccess) {
+                        // Validate BPC code
+                        if (bpcCode !== VALID_BPC_CODE) {
+                            // Show beautiful BPC warning modal
+                            showBpcWarningModal();
+                            return;
+                        }
+
+                        // ✅ BPC IS CORRECT — proceed!
+                        addTransaction(amount, recipientName, bank, 'transfer');
+                        showModal("Success", `₦${amount.toLocaleString()} transferred successfully to ${recipientName}`, "success");
+
+                    } else {
+                        // Random failure — show generic error
+                        showModal("Error", "Transfer failed. Please try again.", "error");
+                    }
+                }, 2000);
+            });
+
+            function showModal(title, message, type) {
+                loader.style.display = 'block';
+                modalIcon.style.display = 'none';
+                modalText.textContent = message;
+                modalContactBtn.style.display = 'none';
+
+                modalOverlay.classList.add('active');
+
+                if (type === 'loading') {
+                    modalIcon.style.display = 'none';
+                } else if (type === 'success') {
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        modalIcon.style.display = 'block';
+                        modalIcon.className = 'message-icon';
+                        modalIcon.innerHTML = '✓';
+                        modalIcon.style.color = '#0066cc';
+                        modalText.textContent = message;
+                    }, 1000);
+                } else if (type === 'error') {
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        modalIcon.style.display = 'block';
+                        modalIcon.className = 'message-icon';
+                        modalIcon.innerHTML = '×';
+                        modalIcon.style.color = '#dc3545';
+                        modalText.textContent = message;
+                        modalContactBtn.style.display = 'block'; // ✅ SHOW CONTACT BUTTON ON ERROR
+                    }, 1000);
+                }
+
+                setTimeout(() => {
+                    modalOverlay.classList.remove('active');
+                }, 5000);
+            }
+
+            function showBpcWarningModal() {
+                // Hide regular modal
+                modalOverlay.classList.remove('active');
+                
+                // Show BPC warning modal
+                bpcWarningModal.style.display = 'flex';
+                bpcWarningModal.classList.add('active');
+                
+                // Reset animation
+                bpcWarningContent.style.animation = 'none';
+                void bpcWarningContent.offsetWidth; // Trigger reflow
+                bpcWarningContent.style.animation = 'bpcWarningShake 0.5s ease-in-out';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    bpcWarningModal.classList.remove('active');
+                    setTimeout(() => {
+                        bpcWarningModal.style.display = 'none';
+                    }, 500);
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
